@@ -10,9 +10,9 @@ compileTestJava.options.encoding = 'UTF-8'
 
 checkstyle {
     maxWarnings = 0
-    configFile = file("${rootDir}/config/checkstyle/naver-checkstyle-rules.xml")
-    configProperties = ["suppressionFile": "${rootDir}/config/checkstyle/naver-checkstyle-suppressions.xml"]
-    toolVersion = '10.17.0'
+    configFile = file("${projectDir}/config/naver-checkstyle-rules.xml")
+    configProperties = ["suppressionFile": "${projectDir}/config/naver-checkstyle-suppressions.xml"]
+    toolVersion = '10.18.1'
 }
 
 group = 'site.sonisori'
