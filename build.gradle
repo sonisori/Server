@@ -2,6 +2,17 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+    id 'checkstyle'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+checkstyle {
+    maxWarnings = 0
+    configFile = file("${projectDir}/config/naver-checkstyle-rules.xml")
+    configProperties = ["suppressionFile": "${projectDir}/config/naver-checkstyle-suppressions.xml"]
+    toolVersion = '10.18.1'
 }
 
 group = 'site.sonisori'
