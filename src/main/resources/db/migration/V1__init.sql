@@ -39,6 +39,12 @@ CREATE TABLE IF NOT EXISTS `sonisori`.`quiz_histories` (
                                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
+CREATE TABLE `sonisori`.`sign_words` (
+                                         `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                         `word` VARCHAR(50) NOT NULL,
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
 ALTER TABLE `sonisori`.`sign_quizzes`
     ADD INDEX `fk_sign-topics_sign-quizzes_id_idx` (`sign_topic_id` ASC) VISIBLE;
 
