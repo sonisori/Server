@@ -53,4 +53,4 @@ jobs:
           reporter: 'github-pr-check'
           tool_name: 'Checkstyle'
           checkstyle_config: ./config/naver-checkstyle-rules.xml
-          properties_file: ./config/naver-checkstyle-suppresions.xml
+          properties_file: ./config/naver-checkstyle-suppressions.xml
