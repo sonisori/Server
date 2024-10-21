@@ -11,11 +11,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.sonisori.sonisori.common.DataEntity;
+import site.sonisori.sonisori.constants.Role;
+import site.sonisori.sonisori.constants.SocialType;
 
 @Entity
 @Table(name = "users")
@@ -23,19 +28,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends Data {
+public class User extends DataEntity {
 	@Id
 	@Column(name = "id")
-	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name", length = 20)
-	@NotNull
+	@Column(name = "name")
+	@NotBlank
+	@Size(max = 20)
 	private String name;
 
-	@Column(name = "email", length = 45)
-	@NotNull
+	@Column(name = "email")
+	@NotBlank
+	@Size(max = 45)
 	private String email;
 
 	@Column(name = "role")
@@ -43,8 +49,9 @@ public class User extends Data {
 	@NotNull
 	private Role role;
 
-	@Column(name = "username", length = 500)
-	@NotNull
+	@Column(name = "username")
+	@NotBlank
+	@Size(max = 500)
 	private String username;
 
 	@Column(name = "social_type")
@@ -53,13 +60,6 @@ public class User extends Data {
 	private SocialType socialType;
 
 	@OneToMany(mappedBy = "user", orphanRemoval = true)
-	private List<History> histories;
+	private List<QuizHistory> userHistories;
 
-	public enum Role {
-		ROLE_USER, ROLE_ADMIN
-	}
-
-	public enum SocialType {
-		kakao, google
-	}
 }

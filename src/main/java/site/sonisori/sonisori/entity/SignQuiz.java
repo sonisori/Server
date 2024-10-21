@@ -2,43 +2,43 @@ package site.sonisori.sonisori.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.sonisori.sonisori.common.DataEntity;
 
 @Entity
-@Table(name = "quiz_histories")
+@Table(name = "sign_quizzes")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class History extends Data {
+public class SignQuiz extends DataEntity {
 
 	@Id
-	@NotNull
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@NotNull
-	@JoinColumn(name = "user_id")
-	private User user;
-
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
 	@JoinColumn(name = "sign_topic_id")
-	private Topic topic;
+	private SignTopic signTopic;
 
-	@NotNull
-	@Column(name = "count")
-	private int count;
+	@NotBlank
+	@Column(name = "senetece")
+	@Size(max = 255)
+	private String sentence;
+
 }

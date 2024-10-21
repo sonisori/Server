@@ -2,6 +2,7 @@ package site.sonisori.sonisori.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,28 +14,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.sonisori.sonisori.common.DataEntity;
 
 @Entity
-@Table(name = "sign_quizzes")
+@Table(name = "quiz_histories")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Quiz extends Data {
+public class QuizHistory extends DataEntity {
 
 	@Id
-	@NotNull
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
 	@JoinColumn(name = "sign_topic_id")
-	private Topic topic;
+	private SignTopic signTopic;
 
 	@NotNull
-	@Column(name = "senetece", length = 255)
-	private String sentece;
-
+	@Column(name = "count")
+	private int count;
 }

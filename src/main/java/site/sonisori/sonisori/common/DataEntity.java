@@ -1,6 +1,6 @@
-package site.sonisori.sonisori.entity;
+package site.sonisori.sonisori.common;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,12 +11,12 @@ import lombok.Getter;
 
 @MappedSuperclass
 @Getter
-public abstract class Data {
+public abstract class DataEntity {
 
 	@CreationTimestamp
 	@Column(updatable = false)
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 
 	@UpdateTimestamp
-	private Timestamp updateAt;
+	private LocalDateTime updatedAt;
 }
