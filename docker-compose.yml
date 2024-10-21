@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.37
+    container_name: sonisori-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - sonisori-network
+
+  flyway:
+    image: flyway/flyway:8.0.4
+    container_name: sonisori-flyway
+    command: >
+      -url=jdbc:mysql://db:3306/${MYSQL_DATABASE}
+      -user=${MYSQL_USER}
+      -password=${MYSQL_PASSWORD}
+      -schemas=${MYSQL_DATABASE} 
+      -table=flyway_schema_history 
+      migrate
+    depends_on:
+      - db
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    networks:
+      - sonisori-network
+
+  redis:
+    image: redis:alpine
+    container_name: sonisori-redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis_data:/data
+    networks:
+      - sonisori-network
+
+networks:
+  sonisori-network:
+
+volumes:
+  db_data:
+  redis_data:
