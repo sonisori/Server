@@ -49,6 +49,6 @@ public class SignTopic extends DateEntity {
 	@Enumerated(EnumType.STRING)
 	private Difficulty difficulty;
 
-	@OneToMany(mappedBy = "topic", orphanRemoval = true)
+	@OneToMany(mappedBy = "signTopic", orphanRemoval = true)
 	private List<SignQuiz> signQuizzes;
 }
