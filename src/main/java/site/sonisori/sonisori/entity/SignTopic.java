@@ -51,8 +51,4 @@ public class SignTopic extends DateEntity {
 
 	@OneToMany(mappedBy = "topic", orphanRemoval = true)
 	private List<SignQuiz> signQuizzes;
-
-	@OneToMany(mappedBy = "topic", orphanRemoval = true)
-	private List<QuizHistory> quizHistories;
-
 }
