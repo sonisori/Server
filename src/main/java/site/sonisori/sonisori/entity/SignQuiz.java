@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.sonisori.sonisori.common.DataEntity;
+import site.sonisori.sonisori.common.DateEntity;
 
 @Entity
 @Table(name = "sign_quizzes")
@@ -24,7 +24,7 @@ import site.sonisori.sonisori.common.DataEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignQuiz extends DataEntity {
+public class SignQuiz extends DateEntity {
 
 	@Id
 	@Column(name = "id")
@@ -37,7 +37,7 @@ public class SignQuiz extends DataEntity {
 	private SignTopic signTopic;
 
 	@NotBlank
-	@Column(name = "senetece")
+	@Column(name = "sentence")
 	@Size(max = 255)
 	private String sentence;
 

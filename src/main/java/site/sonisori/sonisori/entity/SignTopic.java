@@ -18,8 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.sonisori.sonisori.common.DataEntity;
-import site.sonisori.sonisori.constants.Difficulty;
+import site.sonisori.sonisori.common.DateEntity;
+import site.sonisori.sonisori.common.Difficulty;
 
 @Entity
 @Table(name = "sign_topics")
@@ -27,7 +27,7 @@ import site.sonisori.sonisori.constants.Difficulty;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignTopic extends DataEntity {
+public class SignTopic extends DateEntity {
 
 	@Id
 	@Column(name = "id")
@@ -53,6 +53,6 @@ public class SignTopic extends DataEntity {
 	private List<SignQuiz> signQuizzes;
 
 	@OneToMany(mappedBy = "topic", orphanRemoval = true)
-	private List<QuizHistory> topicHistories; // User의 histories와 구분
+	private List<QuizHistory> quizHistories;
 
 }

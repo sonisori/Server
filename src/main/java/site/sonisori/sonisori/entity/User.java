@@ -18,9 +18,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.sonisori.sonisori.common.DataEntity;
-import site.sonisori.sonisori.constants.Role;
-import site.sonisori.sonisori.constants.SocialType;
+import site.sonisori.sonisori.common.DateEntity;
+import site.sonisori.sonisori.common.Role;
+import site.sonisori.sonisori.common.SocialType;
 
 @Entity
 @Table(name = "users")
@@ -28,7 +28,7 @@ import site.sonisori.sonisori.constants.SocialType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends DataEntity {
+public class User extends DateEntity {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +60,6 @@ public class User extends DataEntity {
 	private SocialType socialType;
 
 	@OneToMany(mappedBy = "user", orphanRemoval = true)
-	private List<QuizHistory> userHistories;
+	private List<QuizHistory> quizHistories;
 
 }

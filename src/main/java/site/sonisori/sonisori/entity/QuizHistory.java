@@ -9,12 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.sonisori.sonisori.common.DataEntity;
+import site.sonisori.sonisori.common.DateEntity;
 
 @Entity
 @Table(name = "quiz_histories")
@@ -22,7 +23,7 @@ import site.sonisori.sonisori.common.DataEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuizHistory extends DataEntity {
+public class QuizHistory extends DateEntity {
 
 	@Id
 	@Column(name = "id")
@@ -41,5 +42,6 @@ public class QuizHistory extends DataEntity {
 
 	@NotNull
 	@Column(name = "count")
+	@Min(0)
 	private int count;
 }

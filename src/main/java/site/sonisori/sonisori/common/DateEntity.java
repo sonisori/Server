@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @MappedSuperclass
 @Getter
-public abstract class DataEntity {
+public abstract class DateEntity {
 
 	@CreationTimestamp
 	@Column(updatable = false)
