@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(HandlerMethodValidationException.class)
 	public ResponseEntity<ErrorResponse> handlerMethodValidationException(HandlerMethodValidationException ex) {
-		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
+		logException(ex);
 		String errorMessage = ex.getAllValidationResults()
 			.getFirst()
 			.getResolvableErrors()
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
+		logException(ex);
 		List<FieldError> fieldErrors = ex.getFieldErrors();
 		String errorMessage = fieldErrors.stream()
 			.map(FieldError::getDefaultMessage)
@@ -49,22 +49,26 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException ex) {
-		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
+		logException(ex);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(new ErrorResponse(ErrorMessage.NULL_POINTER_EXCEPTION.getMessage()));
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
+		logException(ex);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(new ErrorResponse(ErrorMessage.SERVER_ERROR.getMessage()));
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
+		logException(ex);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(new ErrorResponse(ErrorMessage.SERVER_ERROR.getMessage()));
+	}
+
+	private void logException(Exception ex) {
+		log.error("Unhandled exception: [{}] - {}", ex.getClass().getSimpleName(), ex.getMessage());
 	}
 }
