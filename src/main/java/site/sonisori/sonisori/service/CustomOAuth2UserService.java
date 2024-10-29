@@ -10,7 +10,7 @@ import site.sonisori.sonisori.dto.CustomOAuth2User;
 import site.sonisori.sonisori.dto.GoogleResponse;
 import site.sonisori.sonisori.dto.KakaoResponse;
 import site.sonisori.sonisori.dto.OAuth2Response;
-import site.sonisori.sonisori.dto.UserDTO;
+import site.sonisori.sonisori.dto.UserDto;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -32,12 +32,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 
-		UserDTO userDTO = new UserDTO();
-		userDTO.setUsername(username);
-		userDTO.setName(oAuth2Response.getName());
-		userDTO.setRole("ROLE_USER");
+		UserDto userDto = new UserDto();
+		userDto.setUsername(username);
+		userDto.setName(oAuth2Response.getName());
+		userDto.setRole("ROLE_USER");
 
-		return new CustomOAuth2User(userDTO);
+		return new CustomOAuth2User(userDto);
 	}
 
 }
