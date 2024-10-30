@@ -1,0 +1,44 @@
+package site.sonisori.sonisori.auth.oauth2;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
+
+@RequiredArgsConstructor
+public class CustomOAuth2User implements OAuth2User, UserDetails {
+	private final OAuth2UserDto oAuth2UserDto;
+	private Map<String, Object> attributes;
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		String role = oAuth2UserDto.role();
+		return Collections.singletonList(new SimpleGrantedAuthority(role));
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return oAuth2UserDto.name();
+	}
+
+	public String getUsername() {
+		return oAuth2UserDto.username();
+	}
+}
