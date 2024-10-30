@@ -7,14 +7,12 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
 
 	private final UserDto userDto;
-
-	public CustomOAuth2User(UserDto userDto) {
-
-		this.userDto = userDto;
-	}
 
 	@Override
 	public Map<String, Object> getAttributes() {
@@ -32,7 +30,7 @@ public class CustomOAuth2User implements OAuth2User {
 			@Override
 			public String getAuthority() {
 
-				return userDto.getRole();
+				return userDto.role();
 			}
 		});
 
@@ -42,11 +40,11 @@ public class CustomOAuth2User implements OAuth2User {
 	@Override
 	public String getName() {
 
-		return userDto.getName();
+		return userDto.name();
 	}
 
 	public String getUsername() {
 
-		return userDto.getUsername();
+		return userDto.username();
 	}
 }

@@ -7,8 +7,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import site.sonisori.sonisori.dto.CustomOAuth2User;
-import site.sonisori.sonisori.dto.GoogleResponse;
 import site.sonisori.sonisori.dto.KakaoResponse;
+import site.sonisori.sonisori.dto.NaverResponse;
 import site.sonisori.sonisori.dto.OAuth2Response;
 import site.sonisori.sonisori.dto.UserDto;
 
@@ -25,17 +25,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		if (registrationId.equals("kakao")) {
 			oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 		} else if (registrationId.equals("google")) {
-			oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
+			oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
 		} else {
 			return null;
 		}
 
 		String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 
-		UserDto userDto = new UserDto();
-		userDto.setUsername(username);
-		userDto.setName(oAuth2Response.getName());
-		userDto.setRole("ROLE_USER");
+		UserDto userDto = new UserDto("ROLE_USER", oAuth2Response.getName(), username);
 
 		return new CustomOAuth2User(userDto);
 	}

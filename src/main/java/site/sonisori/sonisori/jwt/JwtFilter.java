@@ -12,16 +12,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.dto.CustomOAuth2User;
 import site.sonisori.sonisori.dto.UserDto;
 
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 	private final JwtUtil jwtUtil;
-
-	public JwtFilter(JwtUtil jwtUtil) {
-
-		this.jwtUtil = jwtUtil;
-	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -38,7 +35,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		if (authorization == null) {
 
-			System.out.println("token null");
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -47,18 +43,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		if (jwtUtil.isExpired(token)) {
 
-			System.out.println("token expired");
 			filterChain.doFilter(request, response);
-
 			return;
 		}
 
 		String username = jwtUtil.getUsername(token);
 		String role = jwtUtil.getRole(token);
+		String name = jwtUtil.getUserId(token);
 
-		UserDto userDto = new UserDto();
-		userDto.setUsername(username);
-		userDto.setRole(role);
+		UserDto userDto = new UserDto(role, name, username);
 
 		CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDto);
 
