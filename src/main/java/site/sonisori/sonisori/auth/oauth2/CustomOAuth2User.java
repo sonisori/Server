@@ -9,12 +9,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
+import site.sonisori.sonisori.entity.User;
 
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User, UserDetails {
 	private final OAuth2UserDto oAuth2UserDto;
+	@Getter
+	private final User user;
 	private Map<String, Object> attributes;
 
 	@Override
@@ -40,5 +44,9 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 
 	public String getUsername() {
 		return oAuth2UserDto.username();
+	}
+
+	public Long getUserId() {
+		return user.getId();
 	}
 }

@@ -88,10 +88,6 @@ public class JwtUtil {
 		}
 	}
 
-	public Long getUserId(String accessToken) {
-		return Long.parseLong(extractClaims(accessToken).getSubject());
-	}
-
 	public boolean validateAccessToken(String accessToken) {
 		try {
 			Claims claims = extractClaims(accessToken);
