@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
+import site.sonisori.sonisori.common.enums.Role;
 import site.sonisori.sonisori.entity.User;
 
 @RequiredArgsConstructor
@@ -28,8 +29,8 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		String role = oAuth2UserDto.role();
-		return Collections.singletonList(new SimpleGrantedAuthority(role));
+		Role role = oAuth2UserDto.role();
+		return Collections.singletonList(new SimpleGrantedAuthority(role.toString()));
 	}
 
 	@Override

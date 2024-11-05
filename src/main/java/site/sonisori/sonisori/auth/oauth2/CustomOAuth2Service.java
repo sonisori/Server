@@ -14,6 +14,8 @@ import site.sonisori.sonisori.auth.oauth2.dto.KakaoResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.NaverResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2Response;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
+import site.sonisori.sonisori.common.enums.Role;
+import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.repository.UserRepository;
 
@@ -40,23 +42,23 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 
 		String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 
-		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(oAuth2Response.getProviderId(), username, "ROLE_USER",
-			oAuth2Response.getEmail());
+		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(oAuth2Response.getProviderId(), username, Role.ROLE_USER,
+			oAuth2Response.getEmail(), SocialType.valueOf(oAuth2Response.getProvider()));
 
-		User user = userRepository.findByUsername(username);
+		User user = userRepository.findByUsername(username)
+			.orElseThrow(() -> new UsernameNotFoundException(username));
 
 		return new CustomOAuth2User(oAuth2UserDto, user);
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
-		OAuth2UserDto userDto = new OAuth2UserDto(user.getName(), user.getUsername(), user.getRole().toString(),
-			user.getEmail());
-		if (user != null) {
-			return new CustomOAuth2User(userDto, user);
-		}
+		User user = userRepository.findByUsername(username)
+			.orElseThrow(() -> new UsernameNotFoundException(username));
 
-		return null;
+		OAuth2UserDto userDto = new OAuth2UserDto(user.getName(), user.getUsername(), user.getRole(),
+			user.getEmail(), user.getSocialType());
+
+		return new CustomOAuth2User(userDto, user);
 	}
 }

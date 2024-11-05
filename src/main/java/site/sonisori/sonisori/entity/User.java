@@ -19,8 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.sonisori.sonisori.common.DateEntity;
-import site.sonisori.sonisori.common.Role;
-import site.sonisori.sonisori.common.SocialType;
+import site.sonisori.sonisori.common.enums.Role;
+import site.sonisori.sonisori.common.enums.SocialType;
 
 @Entity
 @Table(name = "users")
