@@ -1,12 +1,16 @@
 package site.sonisori.sonisori.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -20,6 +24,7 @@ import io.jsonwebtoken.security.SignatureException;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.auth.jwt.entity.RefreshToken;
 import site.sonisori.sonisori.auth.jwt.repository.RefreshTokenRepository;
+import site.sonisori.sonisori.auth.oauth2.CustomOAuth2Service;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.entity.User;
 
@@ -31,8 +36,10 @@ public class JwtUtil {
 	private final long accessTokenExpiration;
 	private final long refreshTokenExpiration;
 	private final SecretKey secretKey;
+	private final CustomOAuth2Service customOAuth2Service;
 
 	public JwtUtil(RefreshTokenRepository refreshTokenRepository,
+		CustomOAuth2Service customOAuth2Service,
 		@Value("${spring.jwt.secret-key}") String secret,
 		@Value("${spring.application.name}") String issuer,
 		@Value("${spring.jwt.access-expiration}") long accessTokenExpiration,
@@ -42,6 +49,7 @@ public class JwtUtil {
 		this.accessTokenExpiration = accessTokenExpiration * MILLIS;
 		this.refreshTokenExpiration = refreshTokenExpiration * MILLIS;
 		this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+		this.customOAuth2Service = customOAuth2Service;
 	}
 
 	public String createAccessToken(User user) {
@@ -103,4 +111,15 @@ public class JwtUtil {
 			throw new JwtException(e.getMessage());
 		}
 	}
+
+	public Long getUserId(String token) {
+		Claims claims = extractClaims(token);
+		return Long.parseLong(claims.getSubject());
+	}
+
+	public Authentication getAuthentication(String token) {
+		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUserId(token).toString());
+		return new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
+	}
+
 }
