@@ -1,4 +1,4 @@
-package site.sonisori.sonisori.auth.jwt;
+package site.sonisori.sonisori.auth.jwt.exception;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.auth.cookie.CookieUtil;
+import site.sonisori.sonisori.auth.jwt.JwtUtil;
 
 @RequiredArgsConstructor
 @Component
