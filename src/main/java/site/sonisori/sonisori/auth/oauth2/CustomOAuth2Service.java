@@ -29,16 +29,8 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
-		String registrationId = userRequest.getClientRegistration().getRegistrationId();
-		OAuth2Response oAuth2Response = null;
-
-		if (registrationId.equals("kakao")) {
-			oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
-		} else if (registrationId.equals("naver")) {
-			oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
-		} else {
-			return null;
-		}
+		OAuth2Response oAuth2Response = getOAuth2Response(userRequest.getClientRegistration().getRegistrationId(),
+			oAuth2User);
 
 		String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 		SocialType socialType = SocialType.valueOf(oAuth2Response.getProvider());
@@ -47,8 +39,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(oAuth2Response.getProviderId(), username, role,
 			oAuth2Response.getEmail(), socialType);
 
-		User user = userRepository.findByUsername(username)
-			.orElseThrow(() -> new UsernameNotFoundException(username));
+		User user = getUserFromDatabase(oAuth2Response, username);
 
 		return new CustomOAuth2User(oAuth2UserDto, user);
 	}
@@ -62,5 +53,21 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 			user.getEmail(), user.getSocialType());
 
 		return new CustomOAuth2User(userDto, user);
+	}
+
+	private OAuth2Response getOAuth2Response(String registrationId, OAuth2User oAuth2User) {
+		switch (registrationId) {
+			case "kakao":
+				return new KakaoResponse(oAuth2User.getAttributes());
+			case "naver":
+				return new NaverResponse(oAuth2User.getAttributes());
+			default:
+				return null;
+		}
+	}
+
+	private User getUserFromDatabase(OAuth2Response oAuth2Response, String username) {
+		return userRepository.findByUsername(username)
+			.orElseThrow(() -> new UsernameNotFoundException(username));
 	}
 }
