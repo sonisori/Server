@@ -2,6 +2,7 @@ package site.sonisori.sonisori.auth.oauth2;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 	private final CookieUtil cookieUtil;
 	private final JwtUtil jwtUtil;
 
+	@Value("${redirect.url}")
+	private String redirectUrl;
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
@@ -36,6 +40,6 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 		cookie = cookieUtil.createCookie("refresh_token", tokenDto.refreshToken(), "localhost").toString();
 		response.addHeader("Set-Cookie", cookie);
 
-		response.sendRedirect("http://localhost:8080/login/oauth2/code/");
+		response.sendRedirect(redirectUrl);
 	}
 }
