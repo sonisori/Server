@@ -39,7 +39,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(oAuth2Response.getProviderId(), username, role,
 			oAuth2Response.getEmail(), socialType);
 
-		User user = getUserFromDatabase(oAuth2Response, username);
+		User user = getUserOrRegister(oAuth2Response, username);
 
 		return new CustomOAuth2User(oAuth2UserDto, user);
 	}
@@ -66,8 +66,15 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 		}
 	}
 
-	private User getUserFromDatabase(OAuth2Response oAuth2Response, String username) {
+	private User getUserOrRegister(OAuth2Response oAuth2Response, String username) {
 		return userRepository.findByUsername(username)
-			.orElseThrow(() -> new UsernameNotFoundException(username));
+			.orElseGet(() -> registerNewUser(oAuth2Response, username));
+	}
+
+	private User registerNewUser(OAuth2Response oAuth2Response, String username) {
+		User user = new User();
+		user.signUp(username, oAuth2Response.getName(), oAuth2Response.getEmail());
+
+		return userRepository.save(user);
 	}
 }
