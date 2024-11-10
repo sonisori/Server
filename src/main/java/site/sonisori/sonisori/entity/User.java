@@ -62,10 +62,12 @@ public class User extends DateEntity {
 	@OneToMany(mappedBy = "user", orphanRemoval = true)
 	private List<QuizHistory> quizHistories;
 
-	public void signUp(String username, String name, String email) {
+	public void signUp(String username, String name, String email, SocialType socialType) {
 		this.username = username;
 		this.name = name;
 		this.email = email;
+		this.role = Role.ROLE_USER;
+		this.socialType =
 	}
 
 }

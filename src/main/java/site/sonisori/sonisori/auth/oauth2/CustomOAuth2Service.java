@@ -36,8 +36,12 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 		SocialType socialType = SocialType.valueOf(oAuth2Response.getProvider());
 		Role role = Role.ROLE_USER;
 
-		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(oAuth2Response.getProviderId(), username, role,
-			oAuth2Response.getEmail(), socialType);
+		OAuth2UserDto oAuth2UserDto = new OAuth2UserDto(
+			oAuth2Response.getProviderId(),
+			username,
+			role,
+			oAuth2Response.getEmail(),
+			socialType);
 
 		User user = getUserOrRegister(oAuth2Response, username);
 
@@ -49,8 +53,12 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 		User user = userRepository.findByUsername(username)
 			.orElseThrow(() -> new UsernameNotFoundException(username));
 
-		OAuth2UserDto userDto = new OAuth2UserDto(user.getName(), user.getUsername(), user.getRole(),
-			user.getEmail(), user.getSocialType());
+		OAuth2UserDto userDto = new OAuth2UserDto(
+			user.getName(),
+			user.getUsername(),
+			user.getRole(),
+			user.getEmail(),
+			user.getSocialType());
 
 		return new CustomOAuth2User(userDto, user);
 	}
@@ -73,7 +81,10 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 
 	private User registerNewUser(OAuth2Response oAuth2Response, String username) {
 		User user = new User();
-		user.signUp(username, oAuth2Response.getName(), oAuth2Response.getEmail());
+		user.signUp(username,
+			oAuth2Response.getName(),
+			oAuth2Response.getEmail(),
+			SocialType.valueOf(oAuth2Response.getProvider()));
 
 		return userRepository.save(user);
 	}
