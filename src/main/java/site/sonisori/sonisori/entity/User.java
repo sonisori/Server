@@ -67,7 +67,7 @@ public class User extends DateEntity {
 		this.name = name;
 		this.email = email;
 		this.role = Role.ROLE_USER;
-		this.socialType =
+		this.socialType = socialType;
 	}
 
 }
