@@ -62,6 +62,7 @@ public class JwtUtil {
 			.subject(String.valueOf(user.getId()))
 			.claim("token_type", "access_token")
 			.claim("role", user.getRole())
+			.claim("username", user.getUsername())
 			.expiration(expiryDate)
 			.signWith(secretKey)
 			.compact();
@@ -112,13 +113,13 @@ public class JwtUtil {
 		}
 	}
 
-	public Long getUserId(String token) {
+	public String getUsername(String token) {
 		Claims claims = extractClaims(token);
-		return Long.parseLong(claims.getSubject());
+		return claims.get("username", String.class);
 	}
 
 	public Authentication getAuthentication(String token) {
-		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUserId(token).toString());
+		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUsername(token));
 		return new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
 	}
 
