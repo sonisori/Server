@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `sonisori`.`users` (
     `email` VARCHAR(45) NOT NULL,
     `role` ENUM('ROLE_USER','ROLE_ADMIN') NOT NULL DEFAULT 'ROLE_USER',
     `username` VARCHAR(500) NOT NULL,
-    `social_type` ENUM('kakao','naver') NOT NULL,
+    `social_type` ENUM('kakao','naver', 'none') NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
     PRIMARY KEY (`id`)
