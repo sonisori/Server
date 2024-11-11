@@ -19,7 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.sonisori.sonisori.common.DateEntity;
-import site.sonisori.sonisori.common.Difficulty;
+import site.sonisori.sonisori.common.enums.Difficulty;
 
 @Entity
 @Table(name = "sign_topics")

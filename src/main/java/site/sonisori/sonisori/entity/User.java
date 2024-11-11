@@ -19,8 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.sonisori.sonisori.common.DateEntity;
-import site.sonisori.sonisori.common.Role;
-import site.sonisori.sonisori.common.SocialType;
+import site.sonisori.sonisori.common.enums.Role;
+import site.sonisori.sonisori.common.enums.SocialType;
 
 @Entity
 @Table(name = "users")
@@ -61,5 +61,13 @@ public class User extends DateEntity {
 
 	@OneToMany(mappedBy = "user", orphanRemoval = true)
 	private List<QuizHistory> quizHistories;
+
+	public void signUp(String username, String name, String email, SocialType socialType) {
+		this.username = username;
+		this.name = name;
+		this.email = email;
+		this.role = Role.ROLE_USER;
+		this.socialType = socialType;
+	}
 
 }

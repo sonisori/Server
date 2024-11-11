@@ -4,17 +4,15 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+@Component
 public class CookieUtil {
 	@Value("${spring.jwt.refresh-expiration}")
-	private final long refreshExpiration;
-
-	public CookieUtil(long refreshExpiration) {
-		this.refreshExpiration = refreshExpiration;
-	}
+	private long refreshExpiration;
 
 	public ResponseCookie createCookie(String cookieName, String cookieValue, String domain) {
 		return ResponseCookie.from(cookieName, cookieValue)
