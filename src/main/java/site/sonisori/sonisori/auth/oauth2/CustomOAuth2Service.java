@@ -14,9 +14,11 @@ import site.sonisori.sonisori.auth.oauth2.dto.KakaoResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.NaverResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2Response;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
+import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.enums.Role;
 import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.entity.User;
+import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.repository.UserRepository;
 
 @RequiredArgsConstructor
@@ -29,8 +31,15 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
-		OAuth2Response oAuth2Response = getOAuth2Response(userRequest.getClientRegistration().getRegistrationId(),
-			oAuth2User);
+		String registrationId = userRequest.getClientRegistration().getRegistrationId();
+		OAuth2Response oAuth2Response = getOAuth2Response(
+			registrationId,
+			oAuth2User
+		);
+
+		if (oAuth2Response == null) {
+			throw new OAuth2AuthenticationException("Unsupported OAuth2 provider: " + registrationId);
+		}
 
 		String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 		SocialType socialType = SocialType.valueOf(oAuth2Response.getProvider());
@@ -41,7 +50,8 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 			username,
 			role,
 			oAuth2Response.getEmail(),
-			socialType);
+			socialType
+		);
 
 		User user = getUserOrRegister(oAuth2Response, username);
 
@@ -58,7 +68,8 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 			user.getUsername(),
 			user.getRole(),
 			user.getEmail(),
-			user.getSocialType());
+			user.getSocialType()
+		);
 
 		return new CustomOAuth2User(userDto, user);
 	}
@@ -80,11 +91,17 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 	}
 
 	private User registerNewUser(OAuth2Response oAuth2Response, String username) {
+		if (userRepository.existsByEmail(oAuth2Response.getEmail())) {
+			throw new AlreadyExistException(ErrorMessage.DUPLICATE_EMAIL.getMessage());
+		}
+
 		User user = new User();
-		user.signUpOAuth2(username,
+		user.signUpOAuth2(
+			username,
 			oAuth2Response.getName(),
 			oAuth2Response.getEmail(),
-			SocialType.valueOf(oAuth2Response.getProvider()));
+			SocialType.valueOf(oAuth2Response.getProvider())
+		);
 
 		return userRepository.save(user);
 	}
