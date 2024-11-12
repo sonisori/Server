@@ -81,7 +81,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 
 	private User registerNewUser(OAuth2Response oAuth2Response, String username) {
 		User user = new User();
-		user.signUp(username,
+		user.signUpOAuth2(username,
 			oAuth2Response.getName(),
 			oAuth2Response.getEmail(),
 			SocialType.valueOf(oAuth2Response.getProvider()));
