@@ -47,6 +47,12 @@ public class GlobalExceptionHandler {
 			.body(new ErrorResponse(errorMessage));
 	}
 
+	@ExceptionHandler(AlreadyExistException.class)
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+	}
+
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException ex) {
 		logException(ex);

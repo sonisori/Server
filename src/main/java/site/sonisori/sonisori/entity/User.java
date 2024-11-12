@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,9 +41,14 @@ public class User extends DateEntity {
 	private String name;
 
 	@Column(name = "email")
+	@Email
 	@NotBlank
 	@Size(max = 45)
 	private String email;
+
+	@Column(name = "password")
+	@Size(max = 255)
+	private String password;
 
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
@@ -62,12 +68,11 @@ public class User extends DateEntity {
 	@OneToMany(mappedBy = "user", orphanRemoval = true)
 	private List<QuizHistory> quizHistories;
 
-	public void signUp(String username, String name, String email, SocialType socialType) {
+	public void signUpOAuth2(String username, String name, String email, SocialType socialType) {
 		this.username = username;
 		this.name = name;
 		this.email = email;
 		this.role = Role.ROLE_USER;
 		this.socialType = socialType;
 	}
-
 }
