@@ -10,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import lombok.extern.slf4j.Slf4j;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
@@ -48,11 +47,10 @@ public class GlobalExceptionHandler {
 			.body(new ErrorResponse(errorMessage));
 	}
 
-	@ExceptionHandler(DuplicateKeyException.class)
-	public ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException ex) {
-		logException(ex);
-		return ResponseEntity.status(HttpStatus.CONFLICT)
-			.body(new ErrorResponse(ex.getMessage()));
+	@ExceptionHandler(AlreadyExistException.class)
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
 	}
 
 	@ExceptionHandler(NullPointerException.class)
