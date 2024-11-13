@@ -41,7 +41,7 @@ public class UserController {
 		setCookies(response, "access_token", tokenDto.accessToken());
 		setCookies(response, "refresh_token", tokenDto.refreshToken());
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	private void setCookies(HttpServletResponse response, String tokenName, String tokenValue) {
