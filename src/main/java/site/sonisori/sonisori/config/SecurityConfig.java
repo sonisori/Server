@@ -50,7 +50,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests((auth) ->
 				auth
-					.requestMatchers("/login/oauth2/code/*", "/api/auth/signup").permitAll()
+					.requestMatchers("/login/oauth2/code/*", "/api/auth/signup", "/api/auth/login").permitAll()
 					.anyRequest().authenticated()
 			)
 			.exceptionHandling(exceptionHandlerConfig)

@@ -34,12 +34,14 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 		User user = customUserDetails.getUser();
 
 		TokenDto tokenDto = jwtUtil.generateJwt(user);
-		String cookie = cookieUtil.createCookie("access_token", tokenDto.accessToken(), "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
-
-		cookie = cookieUtil.createCookie("refresh_token", tokenDto.refreshToken(), "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+		addCookies(response, "access_token", tokenDto.accessToken());
+		addCookies(response, "refresh_token", tokenDto.refreshToken());
 
 		response.sendRedirect(redirectUrl);
+	}
+
+	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
+		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
+		response.addHeader("Set-Cookie", cookie);
 	}
 }
