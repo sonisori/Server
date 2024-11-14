@@ -66,15 +66,12 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public AuthResponse getUserAuthStatus(Optional<User> user) {
-		if (user.isPresent()) {
-			return getLoggedInUserAuthStatus(user.get());
-		} else {
-			return getAnonymousUserAuthStatus();
-		}
+	public AuthResponse createAuthResponse(Optional<User> user) {
+		return (user.isPresent())
+			? createLoggedInUserAuthStatus(user.get()) : createAnonymousUserAuthStatus();
 	}
 
-	private AuthResponse getLoggedInUserAuthStatus(User user) {
+	private AuthResponse createLoggedInUserAuthStatus(User user) {
 		String name = user.getName();
 		return AuthResponse.builder()
 			.isLogin(true)
@@ -82,7 +79,7 @@ public class UserService {
 			.build();
 	}
 
-	private AuthResponse getAnonymousUserAuthStatus() {
+	private AuthResponse createAnonymousUserAuthStatus() {
 		return AuthResponse.builder()
 			.isLogin(false)
 			.name(null)

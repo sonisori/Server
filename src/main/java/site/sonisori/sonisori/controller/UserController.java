@@ -51,11 +51,11 @@ public class UserController {
 	}
 
 	@GetMapping("/auth")
-	public ResponseEntity<AuthResponse> authenticate(
+	public ResponseEntity<AuthResponse> getUserAuthStatus(
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
 		Optional<User> user = Optional.ofNullable(userDetails).map(CustomUserDetails::getUser);
-		AuthResponse authResponse = userService.getUserAuthStatus(user);
+		AuthResponse authResponse = userService.createAuthResponse(user);
 		return ResponseEntity.ok(authResponse);
 	}
 
