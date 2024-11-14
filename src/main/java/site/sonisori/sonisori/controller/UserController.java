@@ -38,13 +38,13 @@ public class UserController {
 		User user = userService.validateUser(loginRequest);
 		TokenDto tokenDto = userService.createJwt(user);
 
-		setCookies(response, "access_token", tokenDto.accessToken());
-		setCookies(response, "refresh_token", tokenDto.refreshToken());
+		addCookies(response, "access_token", tokenDto.accessToken());
+		addCookies(response, "refresh_token", tokenDto.refreshToken());
 
 		return ResponseEntity.noContent().build();
 	}
 
-	private void setCookies(HttpServletResponse response, String tokenName, String tokenValue) {
+	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
 		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
 		response.addHeader("Set-Cookie", cookie);
 	}
