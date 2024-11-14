@@ -41,14 +41,16 @@ public class UserController {
 		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
 		jwtUtil.deleteRefreshToken(userId, refreshToken);
 
-		String cookie = cookieUtil.clearCookie("access_token", "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
-
-		cookie = cookieUtil.clearCookie("refresh_token", "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+		clearCookies(response, "access_token");
+		clearCookies(response, "refresh_token");
 
 		SecurityContextHolder.clearContext();
 
 		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	public void clearCookies(HttpServletResponse response, String cookieName) {
+		String cookie = cookieUtil.clearCookie(cookieName, "localhost").toString();
+		response.addHeader("Set-Cookie", cookie);
 	}
 }
