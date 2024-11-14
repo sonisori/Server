@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.auth.CustomUserDetails;
 import site.sonisori.sonisori.auth.cookie.CookieUtil;
 import site.sonisori.sonisori.auth.jwt.JwtUtil;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
@@ -30,7 +31,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 
-		CustomOAuth2User customUserDetails = (CustomOAuth2User)authentication.getPrincipal();
+		CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
 		User user = customUserDetails.getUser();
 
 		TokenDto tokenDto = jwtUtil.generateJwt(user);
