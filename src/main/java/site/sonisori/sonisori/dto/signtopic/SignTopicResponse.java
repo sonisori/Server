@@ -8,6 +8,9 @@ public record SignTopicResponse(
 	Long id,
 	String title,
 	String contents,
-	Difficulty difficulty
+	Difficulty difficulty,
+	boolean isCompleted,
+	int totalQuizzes,
+	int count
 ) {
 }
