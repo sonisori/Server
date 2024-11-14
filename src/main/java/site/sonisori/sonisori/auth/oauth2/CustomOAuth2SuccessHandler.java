@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.auth.CustomUserDetails;
 import site.sonisori.sonisori.auth.cookie.CookieUtil;
 import site.sonisori.sonisori.auth.jwt.JwtUtil;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
@@ -30,16 +31,18 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 
-		CustomOAuth2User customUserDetails = (CustomOAuth2User)authentication.getPrincipal();
+		CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
 		User user = customUserDetails.getUser();
 
 		TokenDto tokenDto = jwtUtil.generateJwt(user);
-		String cookie = cookieUtil.createCookie("access_token", tokenDto.accessToken(), "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
-
-		cookie = cookieUtil.createCookie("refresh_token", tokenDto.refreshToken(), "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+		addCookies(response, "access_token", tokenDto.accessToken());
+		addCookies(response, "refresh_token", tokenDto.refreshToken());
 
 		response.sendRedirect(redirectUrl);
+	}
+
+	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
+		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
+		response.addHeader("Set-Cookie", cookie);
 	}
 }

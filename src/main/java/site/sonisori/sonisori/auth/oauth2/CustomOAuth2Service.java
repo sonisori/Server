@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.auth.CustomUserDetails;
 import site.sonisori.sonisori.auth.oauth2.dto.KakaoResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.NaverResponse;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2Response;
@@ -55,7 +56,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 
 		User user = getUserOrRegister(oAuth2Response, username);
 
-		return new CustomOAuth2User(oAuth2UserDto, user);
+		return new CustomUserDetails(oAuth2UserDto, user);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class CustomOAuth2Service extends DefaultOAuth2UserService implements Use
 			user.getSocialType()
 		);
 
-		return new CustomOAuth2User(userDto, user);
+		return new CustomUserDetails(userDto, user);
 	}
 
 	private OAuth2Response getOAuth2Response(String registrationId, OAuth2User oAuth2User) {

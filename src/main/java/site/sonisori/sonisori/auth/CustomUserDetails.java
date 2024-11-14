@@ -1,4 +1,4 @@
-package site.sonisori.sonisori.auth.oauth2;
+package site.sonisori.sonisori.auth;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import site.sonisori.sonisori.common.enums.Role;
 import site.sonisori.sonisori.entity.User;
 
 @RequiredArgsConstructor
-public class CustomOAuth2User implements OAuth2User, UserDetails {
+public class CustomUserDetails implements OAuth2User, UserDetails {
 	private final OAuth2UserDto oAuth2UserDto;
 	@Getter
 	private final User user;
