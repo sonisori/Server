@@ -1,7 +1,10 @@
 package site.sonisori.sonisori.service;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.auth.jwt.JwtUtil;
@@ -9,6 +12,7 @@ import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.enums.Role;
 import site.sonisori.sonisori.common.enums.SocialType;
+import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
 import site.sonisori.sonisori.entity.User;
@@ -29,6 +33,23 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	private void checkEmailDuplicate(String email) {
+		if (userRepository.existsByEmail(email)) {
+			throw new AlreadyExistException(ErrorMessage.DUPLICATE_EMAIL.getMessage());
+		}
+	}
+
+	private User buildUserForSignUp(SignUpRequest signUpRequest) {
+		return User.builder()
+			.name(signUpRequest.name())
+			.email(signUpRequest.email())
+			.password(passwordEncoder.encode(signUpRequest.password()))
+			.role(Role.ROLE_USER)
+			.username(signUpRequest.email())
+			.socialType(SocialType.none)
+			.build();
+	}
+
 	public User validateUser(LoginRequest loginRequest) {
 		String email = loginRequest.email();
 		String password = loginRequest.password();
@@ -44,20 +65,27 @@ public class UserService {
 		return jwtUtil.generateJwt(user);
 	}
 
-	private void checkEmailDuplicate(String email) {
-		if (userRepository.existsByEmail(email)) {
-			throw new AlreadyExistException(ErrorMessage.DUPLICATE_EMAIL.getMessage());
+	@Transactional(readOnly = true)
+	public AuthResponse getUserAuthStatus(Optional<User> user) {
+		if (user.isPresent()) {
+			return getLoggedInUserAuthStatus(user.get());
+		} else {
+			return getAnonymousUserAuthStatus();
 		}
 	}
 
-	private User buildUserForSignUp(SignUpRequest signUpRequest) {
-		return User.builder()
-			.name(signUpRequest.name())
-			.email(signUpRequest.email())
-			.password(passwordEncoder.encode(signUpRequest.password()))
-			.role(Role.ROLE_USER)
-			.username(signUpRequest.email())
-			.socialType(SocialType.none)
+	private AuthResponse getLoggedInUserAuthStatus(User user) {
+		String name = user.getName();
+		return AuthResponse.builder()
+			.isLogin(true)
+			.name(name)
+			.build();
+	}
+
+	private AuthResponse getAnonymousUserAuthStatus() {
+		return AuthResponse.builder()
+			.isLogin(false)
+			.name(null)
 			.build();
 	}
 }
