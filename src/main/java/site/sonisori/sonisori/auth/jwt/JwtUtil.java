@@ -74,6 +74,13 @@ public class JwtUtil {
 		return refreshToken.getRefreshToken();
 	}
 
+	public void deleteRefreshToken(String refreshToken) {
+		RefreshToken token = refreshTokenRepository.findById(refreshToken)
+			.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
+
+		refreshTokenRepository.delete(token);
+	}
+
 	public TokenDto generateJwt(User user) {
 		String accessToken = createAccessToken(user);
 		String refreshToken = createRefreshToken(user);
