@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,6 +44,11 @@ public class SignTopic extends DateEntity {
 	@NotBlank
 	@Size(max = 255)
 	private String contents;
+
+	@Column(name = "total_quizzes")
+	@NotNull
+	@Min(0)
+	private int totalQuizzes;
 
 	@Column(name = "difficulty")
 	@NotNull
