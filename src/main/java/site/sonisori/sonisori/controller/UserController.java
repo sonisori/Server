@@ -41,21 +41,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@DeleteMapping("/logout")
-	public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		HttpServletRequest request, HttpServletResponse response) {
-		Long userId = customUserDetails.getUserId();
-		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
-		jwtUtil.deleteRefreshToken(userId, refreshToken);
-
-		deleteCookies(response, "access_token");
-		deleteCookies(response, "refresh_token");
-
-		SecurityContextHolder.clearContext();
-
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
-
 	@PostMapping("/auth/login")
 	public ResponseEntity<Void> login(
 		@RequestBody @Valid LoginRequest loginRequest,
@@ -70,6 +55,20 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@DeleteMapping("/auth/logout")
+	public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		HttpServletRequest request, HttpServletResponse response) {
+		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
+		jwtUtil.deleteRefreshToken(refreshToken);
+
+		deleteCookies(response, "access_token");
+		deleteCookies(response, "refresh_token");
+
+		SecurityContextHolder.clearContext();
+
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/auth")
 	public ResponseEntity<AuthResponse> getUserAuthStatus(
 		@AuthenticationPrincipal CustomUserDetails userDetails
@@ -79,13 +78,13 @@ public class UserController {
 		return ResponseEntity.ok(authResponse);
 	}
 
-	public void deleteCookies(HttpServletResponse response, String cookieName) {
-		String cookie = cookieUtil.clearCookie(cookieName, "localhost").toString();
+	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
+		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
 		response.addHeader("Set-Cookie", cookie);
 	}
 
-	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
-		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
+	private void deleteCookies(HttpServletResponse response, String cookieName) {
+		String cookie = cookieUtil.clearCookie(cookieName, "localhost").toString();
 		response.addHeader("Set-Cookie", cookie);
 	}
 }
