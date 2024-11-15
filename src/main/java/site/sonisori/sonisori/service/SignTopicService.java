@@ -1,6 +1,7 @@
 package site.sonisori.sonisori.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -20,29 +21,33 @@ public class SignTopicService {
 	private final QuizHistoryRepository quizHistoryRepository;
 	private final SignQuizRepository signQuizRepository;
 
-	public List<SignTopicResponse> getTopicsWithStatus(Long userId) {
+	public List<SignTopicResponse> fetchTopicsWithQuizProgress(Long userId) {
 		List<SignTopic> signTopics = signTopicRepository.findAll();
 		List<QuizHistory> quizHistories = quizHistoryRepository.findByUser_id(userId);
 
-		return signTopics.stream().map(
-			signTopic -> {
-				QuizHistory quizHistory = quizHistories.stream()
-					.filter(history -> history.getSignTopic().getId().equals(signTopic.getId()))
-					.findFirst()
-					.orElse(null);
+		Map<Long, QuizHistory> quizHistoryMap = quizHistories.stream()
+			.collect(Collectors.toMap(qh -> qh.getSignTopic().getId(), qh -> qh));
 
-				int totalQuizzes = signQuizRepository.countBySignTopic_id(signTopic.getId());
-				int count = (quizHistory != null) ? quizHistory.getCount() : 0;
+		return signTopics.stream()
+			.map(signTopic -> buildSignTopicResponse(signTopic, quizHistoryMap))
+			.collect(Collectors.toList());
+	}
 
-				return SignTopicResponse.builder()
-					.id(signTopic.getId())
-					.title(signTopic.getTitle())
-					.contents(signTopic.getContents())
-					.difficulty(signTopic.getDifficulty())
-					.isCompleted(quizHistory != null)
-					.totalQuizzes(totalQuizzes)
-					.count(count)
-					.build();
-			}).collect(Collectors.toList());
+	private SignTopicResponse buildSignTopicResponse(
+		SignTopic signTopic,
+		Map<Long, QuizHistory> quizHistoryMap
+	) {
+		QuizHistory quizHistory = quizHistoryMap.get(signTopic.getId());
+		int totalQuizzes = signQuizRepository.countBySignTopic_id(signTopic.getId());
+		int correctCount = (quizHistory != null) ? quizHistory.getCount() : 0;
+		return SignTopicResponse.builder()
+			.id(signTopic.getId())
+			.title(signTopic.getTitle())
+			.contents(signTopic.getContents())
+			.difficulty(signTopic.getDifficulty())
+			.isCompleted(quizHistory != null)
+			.totalQuizzes(totalQuizzes)
+			.correctCount(correctCount)
+			.build();
 	}
 }

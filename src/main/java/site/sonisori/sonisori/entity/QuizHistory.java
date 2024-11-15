@@ -41,7 +41,7 @@ public class QuizHistory extends DateEntity {
 	private SignTopic signTopic;
 
 	@NotNull
-	@Column(name = "count")
+	@Column(name = "correct_count")
 	@Min(0)
-	private int count;
+	private int correctCount;
 }

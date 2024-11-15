@@ -21,11 +21,11 @@ public class SignTopicController {
 	private final SignTopicService signTopicService;
 
 	@GetMapping("/topics")
-	public ResponseEntity<List<SignTopicResponse>> getTopicsWithUserStatus(
+	public ResponseEntity<List<SignTopicResponse>> getAllTopicsWithUserProgress(
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	) {
 		Long userId = userDetails.getUserId();
-		List<SignTopicResponse> topics = signTopicService.getTopicsWithStatus(userId);
+		List<SignTopicResponse> topics = signTopicService.fetchTopicsWithQuizProgress(userId);
 		return ResponseEntity.ok(topics);
 	}
 }

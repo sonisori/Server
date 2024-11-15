@@ -11,6 +11,6 @@ public record SignTopicResponse(
 	Difficulty difficulty,
 	boolean isCompleted,
 	int totalQuizzes,
-	int count
+	int correctCount
 ) {
 }
