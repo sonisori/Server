@@ -20,7 +20,7 @@ public class SignQuizService {
 	private final SignQuizRepository signQuizRepository;
 	private final SignTopicRepository signTopicRepository;
 
-	public List<SignQuizResponse> getSignQuizzes(
+	public List<SignQuizResponse> findQuizzesByTopicId(
 		Long signTopicId
 	) {
 		SignTopic signTopic = signTopicRepository.findById(signTopicId)
