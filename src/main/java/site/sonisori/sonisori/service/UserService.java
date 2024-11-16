@@ -101,7 +101,6 @@ public class UserService {
 		if (user.getName().equals(newName)) {
 			throw new IllegalArgumentException("Name is equal");
 		}
-		
 		user.updateName(newName);
 		userRepository.save(user);
 	}
