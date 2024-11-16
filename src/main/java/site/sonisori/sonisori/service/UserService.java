@@ -85,4 +85,24 @@ public class UserService {
 			.name(null)
 			.build();
 	}
+
+	public void updateUserName(Long userId, String newName) {
+		if (newName == null || newName.trim().isEmpty()) {
+			throw new IllegalArgumentException("Name cannot be empty");
+		}
+
+		if (newName.length() > 20) {
+			throw new IllegalArgumentException("Name is too long");
+		}
+
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+		if (user.getName().equals(newName)) {
+			throw new IllegalArgumentException("Name is equal");
+		}
+		
+		user.updateName(newName);
+		userRepository.save(user);
+	}
 }

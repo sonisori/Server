@@ -9,9 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +27,9 @@ import site.sonisori.sonisori.auth.jwt.JwtUtil;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
+import site.sonisori.sonisori.dto.user.MyPageResponse;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
+import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.service.UserService;
 
@@ -66,6 +72,23 @@ public class UserController {
 
 		SecurityContextHolder.clearContext();
 
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/users/me")
+	public ResponseEntity<MyPageResponse> getMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
+		MyPageResponse myPageResponse = new MyPageResponse(userDetails.getName(),
+			userDetails.getSocialType().toString());
+		return ResponseEntity.ok(myPageResponse);
+	}
+
+	@PutMapping("/users/me")
+	public ResponseEntity<Void> updateMyPage(@AuthenticationPrincipal CustomUserDetails userDetails,
+		@RequestBody String jsonBody) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		UpdateUserNameRequest updateUserNameRequest = objectMapper.readValue(jsonBody, UpdateUserNameRequest.class);
+
+		userService.updateUserName(userDetails.getUserId(), updateUserNameRequest.name());
 		return ResponseEntity.noContent().build();
 	}
 
