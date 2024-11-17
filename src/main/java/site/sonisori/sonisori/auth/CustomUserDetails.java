@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.auth.oauth2.dto.OAuth2UserDto;
 import site.sonisori.sonisori.common.enums.Role;
-import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.entity.User;
 
 @RequiredArgsConstructor
@@ -50,9 +49,5 @@ public class CustomUserDetails implements OAuth2User, UserDetails {
 
 	public Long getUserId() {
 		return user.getId();
-	}
-
-	public SocialType getSocialType() {
-		return oAuth2UserDto.socialType();
 	}
 }

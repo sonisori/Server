@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.auth.CustomUserDetails;
 import site.sonisori.sonisori.auth.jwt.JwtUtil;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
@@ -15,6 +16,8 @@ import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
+import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
+import site.sonisori.sonisori.dto.user.UserProfileResponse;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.exception.InvalidUserException;
@@ -86,22 +89,15 @@ public class UserService {
 			.build();
 	}
 
-	public void updateUserName(Long userId, String newName) {
-		if (newName == null || newName.trim().isEmpty()) {
-			throw new IllegalArgumentException("Name cannot be empty");
-		}
+	public void updateUserName(CustomUserDetails customUserDetails, UpdateUserNameRequest updateUserNameRequest) {
+		User user = userRepository.findById(customUserDetails.getUserId()).orElseThrow(InvalidUserException::new);
 
-		if (newName.length() > 20) {
-			throw new IllegalArgumentException("Name is too long");
-		}
-
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-
-		if (user.getName().equals(newName)) {
-			throw new IllegalArgumentException("Name is equal");
-		}
-		user.updateName(newName);
+		user.updateName(updateUserNameRequest.name());
 		userRepository.save(user);
+	}
+
+	public UserProfileResponse setUserProfileResponse(CustomUserDetails userDetails) {
+		return new UserProfileResponse(userDetails.getName(),
+			userDetails.getUser().getSocialType().toString());
 	}
 }
