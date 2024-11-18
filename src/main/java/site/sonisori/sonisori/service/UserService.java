@@ -15,11 +15,12 @@ import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
+import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
 import site.sonisori.sonisori.dto.user.UserProfileResponse;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.exception.InvalidUserException;
-import site.sonisori.sonisori.exception.UserNotFoundException;
+import site.sonisori.sonisori.exception.NotFoundException;
 import site.sonisori.sonisori.repository.UserRepository;
 
 @Service
@@ -88,14 +89,18 @@ public class UserService {
 			.build();
 	}
 
-	public void updateUserName(Long userId, String name) {
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+	public void updateUserName(Long userId, UpdateUserNameRequest updateUserNameRequest) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
 
-		user.updateName(name);
+		user.updateName(updateUserNameRequest.name());
 		userRepository.save(user);
 	}
 
-	public UserProfileResponse createUserProfileResponse(String name, String socialType) {
-		return new UserProfileResponse(name, socialType);
+	public UserProfileResponse createUserProfileResponse(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
+
+		return new UserProfileResponse(user.getName(), user.getSocialType().toString());
 	}
 }

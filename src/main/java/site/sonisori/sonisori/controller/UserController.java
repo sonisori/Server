@@ -74,9 +74,8 @@ public class UserController {
 
 	@GetMapping("/users/me")
 	public ResponseEntity<UserProfileResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-		String name = userDetails.getName();
-		String socialType = userDetails.getUser().getSocialType().toString();
-		UserProfileResponse userProfileResponse = userService.createUserProfileResponse(name, socialType);
+		Long userId = userDetails.getUserId();
+		UserProfileResponse userProfileResponse = userService.createUserProfileResponse(userId);
 		return ResponseEntity.ok(userProfileResponse);
 	}
 
@@ -84,8 +83,7 @@ public class UserController {
 	public ResponseEntity<Void> updateUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@Valid @RequestBody UpdateUserNameRequest updateUserNameRequest) {
 		Long userId = userDetails.getUserId();
-		String name = updateUserNameRequest.name();
-		userService.updateUserName(userId, name);
+		userService.updateUserName(userId, updateUserNameRequest);
 		return ResponseEntity.noContent().build();
 	}
 
