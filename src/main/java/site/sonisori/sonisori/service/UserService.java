@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import site.sonisori.sonisori.auth.CustomUserDetails;
 import site.sonisori.sonisori.auth.jwt.JwtUtil;
 import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
@@ -16,11 +15,11 @@ import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
-import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
 import site.sonisori.sonisori.dto.user.UserProfileResponse;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.exception.InvalidUserException;
+import site.sonisori.sonisori.exception.UserNotFoundException;
 import site.sonisori.sonisori.repository.UserRepository;
 
 @Service
@@ -89,15 +88,14 @@ public class UserService {
 			.build();
 	}
 
-	public void updateUserName(CustomUserDetails customUserDetails, UpdateUserNameRequest updateUserNameRequest) {
-		User user = userRepository.findById(customUserDetails.getUserId()).orElseThrow(InvalidUserException::new);
+	public void updateUserName(Long userId, String name) {
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-		user.updateName(updateUserNameRequest.name());
+		user.updateName(name);
 		userRepository.save(user);
 	}
 
-	public UserProfileResponse setUserProfileResponse(CustomUserDetails userDetails) {
-		return new UserProfileResponse(userDetails.getName(),
-			userDetails.getUser().getSocialType().toString());
+	public UserProfileResponse createUserProfileResponse(String name, String socialType) {
+		return new UserProfileResponse(name, socialType);
 	}
 }
