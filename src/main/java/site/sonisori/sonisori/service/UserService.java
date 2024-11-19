@@ -2,6 +2,7 @@ package site.sonisori.sonisori.service;
 
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import site.sonisori.sonisori.dto.user.SignUpRequest;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.exception.InvalidUserException;
+import site.sonisori.sonisori.exception.NotFoundException;
 import site.sonisori.sonisori.repository.UserRepository;
 
 @Service
@@ -84,5 +86,13 @@ public class UserService {
 			.isLogin(false)
 			.name(null)
 			.build();
+	}
+
+	public void deleteUser(Long userId) {
+		try {
+			userRepository.deleteById(userId);
+		} catch (EmptyResultDataAccessException e) {
+			throw new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage());
+		}
 	}
 }

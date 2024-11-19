@@ -78,6 +78,23 @@ public class UserController {
 		return ResponseEntity.ok(authResponse);
 	}
 
+	@DeleteMapping("/users/me")
+	public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		HttpServletRequest request, HttpServletResponse response) {
+		Long userId = customUserDetails.getUserId();
+		userService.deleteUser(userId);
+
+		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
+		jwtUtil.deleteRefreshToken(refreshToken);
+
+		deleteCookies(response, "access_token");
+		deleteCookies(response, "refresh_token");
+
+		SecurityContextHolder.clearContext();
+
+		return ResponseEntity.noContent().build();
+	}
+
 	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
 		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
 		response.addHeader("Set-Cookie", cookie);
