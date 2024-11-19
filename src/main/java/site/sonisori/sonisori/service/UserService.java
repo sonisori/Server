@@ -16,6 +16,8 @@ import site.sonisori.sonisori.common.enums.SocialType;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
+import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
+import site.sonisori.sonisori.dto.user.UserProfileResponse;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.exception.AlreadyExistException;
 import site.sonisori.sonisori.exception.InvalidUserException;
@@ -86,6 +88,21 @@ public class UserService {
 			.isLogin(false)
 			.name(null)
 			.build();
+	}
+
+	public void updateUserName(Long userId, UpdateUserNameRequest updateUserNameRequest) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
+
+		user.updateName(updateUserNameRequest.name());
+		userRepository.save(user);
+	}
+
+	public UserProfileResponse createUserProfileResponse(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
+
+		return new UserProfileResponse(user.getName(), user.getSocialType().toString());
 	}
 
 	public void deleteUser(Long userId) {

@@ -75,4 +75,8 @@ public class User extends DateEntity {
 		this.role = Role.ROLE_USER;
 		this.socialType = socialType;
 	}
+
+	public void updateName(String newName) {
+		this.name = newName;
+	}
 }

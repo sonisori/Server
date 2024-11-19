@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,8 @@ import site.sonisori.sonisori.auth.jwt.dto.TokenDto;
 import site.sonisori.sonisori.dto.user.AuthResponse;
 import site.sonisori.sonisori.dto.user.LoginRequest;
 import site.sonisori.sonisori.dto.user.SignUpRequest;
+import site.sonisori.sonisori.dto.user.UpdateUserNameRequest;
+import site.sonisori.sonisori.dto.user.UserProfileResponse;
 import site.sonisori.sonisori.entity.User;
 import site.sonisori.sonisori.service.UserService;
 
@@ -66,6 +69,21 @@ public class UserController {
 
 		SecurityContextHolder.clearContext();
 
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/users/me")
+	public ResponseEntity<UserProfileResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+		Long userId = userDetails.getUserId();
+		UserProfileResponse userProfileResponse = userService.createUserProfileResponse(userId);
+		return ResponseEntity.ok(userProfileResponse);
+	}
+
+	@PutMapping("/users/me")
+	public ResponseEntity<Void> updateUserProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+		@Valid @RequestBody UpdateUserNameRequest updateUserNameRequest) {
+		Long userId = userDetails.getUserId();
+		userService.updateUserName(userId, updateUserNameRequest);
 		return ResponseEntity.noContent().build();
 	}
 
