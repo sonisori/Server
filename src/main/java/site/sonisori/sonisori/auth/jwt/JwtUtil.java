@@ -27,6 +27,8 @@ import site.sonisori.sonisori.auth.jwt.repository.RefreshTokenRepository;
 import site.sonisori.sonisori.auth.oauth2.CustomOAuth2Service;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.entity.User;
+import site.sonisori.sonisori.exception.NotFoundException;
+import site.sonisori.sonisori.repository.UserRepository;
 
 @Component
 public class JwtUtil {
@@ -37,19 +39,21 @@ public class JwtUtil {
 	private final long refreshTokenExpiration;
 	private final SecretKey secretKey;
 	private final CustomOAuth2Service customOAuth2Service;
+	private final UserRepository userRepository;
 
 	public JwtUtil(RefreshTokenRepository refreshTokenRepository,
 		CustomOAuth2Service customOAuth2Service,
 		@Value("${spring.jwt.secret-key}") String secret,
 		@Value("${spring.application.name}") String issuer,
 		@Value("${spring.jwt.access-expiration}") long accessTokenExpiration,
-		@Value("${spring.jwt.refresh-expiration}") long refreshTokenExpiration) {
+		@Value("${spring.jwt.refresh-expiration}") long refreshTokenExpiration, UserRepository userRepository) {
 		this.refreshTokenRepository = refreshTokenRepository;
 		this.issuer = issuer;
 		this.accessTokenExpiration = accessTokenExpiration * MILLIS;
 		this.refreshTokenExpiration = refreshTokenExpiration * MILLIS;
 		this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 		this.customOAuth2Service = customOAuth2Service;
+		this.userRepository = userRepository;
 	}
 
 	public String createAccessToken(User user) {
@@ -125,9 +129,22 @@ public class JwtUtil {
 		return claims.get("username", String.class);
 	}
 
+	public Long getUserId(String token) {
+		RefreshToken refreshToken = refreshTokenRepository.findById(token)
+			.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
+		return refreshToken.getUserId();
+	}
+
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUsername(token));
 		return new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
 	}
 
+	public String reissueAccessToken(String refreshtoken) {
+		Long userId = getUserId(refreshtoken);
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
+
+		return createAccessToken(user);
+	}
 }

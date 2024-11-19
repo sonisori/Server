@@ -87,18 +87,12 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/auth")
-	public ResponseEntity<AuthResponse> getUserAuthStatus(
-		@AuthenticationPrincipal CustomUserDetails userDetails
-	) {
-		Optional<User> user = Optional.ofNullable(userDetails).map(CustomUserDetails::getUser);
-		AuthResponse authResponse = userService.createAuthResponse(user);
-		return ResponseEntity.ok(authResponse);
-	}
-
 	@DeleteMapping("/users/me")
-	public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<Void> deleteUser(
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) {
 		Long userId = customUserDetails.getUserId();
 		userService.deleteUser(userId);
 
@@ -109,6 +103,27 @@ public class UserController {
 		deleteCookies(response, "refresh_token");
 
 		SecurityContextHolder.clearContext();
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/auth")
+	public ResponseEntity<AuthResponse> getUserAuthStatus(
+		@AuthenticationPrincipal CustomUserDetails userDetails
+	) {
+		Optional<User> user = Optional.ofNullable(userDetails).map(CustomUserDetails::getUser);
+		AuthResponse authResponse = userService.createAuthResponse(user);
+		return ResponseEntity.ok(authResponse);
+	}
+
+	@GetMapping("/reissue")
+	public ResponseEntity<Void> reissue(HttpServletRequest request,
+		HttpServletResponse response
+	) {
+		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
+
+		String newAccessToken = jwtUtil.reissueAccessToken(refreshToken);
+		addCookies(response, "access_token", newAccessToken);
 
 		return ResponseEntity.noContent().build();
 	}
