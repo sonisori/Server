@@ -2,6 +2,7 @@ package site.sonisori.sonisori.service;
 
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,5 +103,13 @@ public class UserService {
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
 
 		return new UserProfileResponse(user.getName(), user.getSocialType().toString());
+	}
+
+	public void deleteUser(Long userId) {
+		try {
+			userRepository.deleteById(userId);
+		} catch (EmptyResultDataAccessException e) {
+			throw new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage());
+		}
 	}
 }
