@@ -124,6 +124,19 @@ public class JwtUtil {
 		}
 	}
 
+	public boolean validateRefreshToken(String refreshToken) {
+		try {
+			UUID.fromString(refreshToken);
+
+			RefreshToken token = refreshTokenRepository.findById(refreshToken)
+				.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
+
+			return true;
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException(ErrorMessage.INVALID_TOKEN.getMessage());
+		}
+	}
+
 	public String getUsername(String token) {
 		Claims claims = extractClaims(token);
 		return claims.get("username", String.class);
@@ -141,6 +154,7 @@ public class JwtUtil {
 	}
 
 	public String reissueAccessToken(String refreshtoken) {
+		validateRefreshToken(refreshtoken);
 		Long userId = getUserId(refreshtoken);
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
