@@ -78,11 +78,10 @@ public class JwtUtil {
 		return refreshToken.getRefreshToken();
 	}
 
-	public void deleteRefreshToken(String refreshToken) {
-		RefreshToken token = refreshTokenRepository.findById(refreshToken)
-			.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
+	public void deleteRefreshToken(String refreshToken, Long userId) {
+		validateRefreshToken(refreshToken, userId);
 
-		refreshTokenRepository.delete(token);
+		refreshTokenRepository.deleteById(refreshToken);
 	}
 
 	public TokenDto generateJwt(User user) {
@@ -124,16 +123,11 @@ public class JwtUtil {
 		}
 	}
 
-	public boolean validateRefreshToken(String refreshToken) {
-		try {
-			UUID.fromString(refreshToken);
-
-			RefreshToken token = refreshTokenRepository.findById(refreshToken)
-				.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
-
-			return true;
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(ErrorMessage.INVALID_TOKEN.getMessage());
+	public void validateRefreshToken(String refreshToken, Long userId) {
+		RefreshToken token = refreshTokenRepository.findById(refreshToken)
+			.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
+		if (!(token.getUserId().equals(userId))) {
+			throw new JwtException(ErrorMessage.INVALID_TOKEN.getMessage());
 		}
 	}
 
@@ -142,20 +136,13 @@ public class JwtUtil {
 		return claims.get("username", String.class);
 	}
 
-	public Long getUserId(String token) {
-		RefreshToken refreshToken = refreshTokenRepository.findById(token)
-			.orElseThrow(() -> new JwtException(ErrorMessage.NOT_FOUND_TOKEN.getMessage()));
-		return refreshToken.getUserId();
-	}
-
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUsername(token));
 		return new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
 	}
 
-	public String reissueAccessToken(String refreshtoken) {
-		validateRefreshToken(refreshtoken);
-		Long userId = getUserId(refreshtoken);
+	public String reissueAccessToken(String refreshToken, Long userId) {
+		validateRefreshToken(refreshToken, userId);
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
 
