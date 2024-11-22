@@ -44,4 +44,14 @@ public class QuizHistory extends DateEntity {
 	@Column(name = "correct_count")
 	@Min(0)
 	private int correctCount;
+
+	public QuizHistory(User user, SignTopic signTopic, int correctCount) {
+		this.user = user;
+		this.signTopic = signTopic;
+		this.correctCount = correctCount;
+	}
+
+	public void updateCorrectCount(int correctCount) {
+		this.correctCount = correctCount;
+	}
 }

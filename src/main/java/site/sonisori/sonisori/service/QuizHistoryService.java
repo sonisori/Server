@@ -31,14 +31,12 @@ public class QuizHistoryService {
 		SignTopic signTopic = signTopicRepository.findById(topicId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_TOPIC.getMessage()));
 
-		if (quizHistoryRequest.correctCount() > signTopic.getTotalQuizzes()) {
-			throw new IllegalArgumentException(ErrorMessage.EXCEEDS_TOTAL_COUNT.getMessage());
-		}
-		QuizHistory quizHistory = QuizHistory.builder()
-			.user(user)
-			.signTopic(signTopic)
-			.correctCount(quizHistoryRequest.correctCount())
-			.build();
+		validateCorrectCount(quizHistoryRequest.correctCount(), signTopic.getTotalQuizzes());
+
+		QuizHistory quizHistory = updateOrSaveQuizHistory(
+			user, signTopic, quizHistoryRequest.correctCount()
+		);
+
 		quizHistoryRepository.save(quizHistory);
 
 		return new QuizHistoryResponse(
@@ -46,5 +44,24 @@ public class QuizHistoryService {
 			quizHistoryRequest.correctCount(),
 			signTopic.getTotalQuizzes()
 		);
+	}
+
+	private void validateCorrectCount(int correctCount, int totalQuizzes) {
+		if (correctCount > totalQuizzes) {
+			throw new IllegalArgumentException(ErrorMessage.EXCEEDS_TOTAL_COUNT.getMessage());
+		}
+	}
+
+	private QuizHistory updateOrSaveQuizHistory(
+		User user,
+		SignTopic signTopic,
+		int correctCount
+	) {
+		return quizHistoryRepository.findByUser_idAndSignTopic_id(user.getId(), signTopic.getId())
+			.map(quizHistory -> {
+				quizHistory.updateCorrectCount(correctCount);
+				return quizHistory;
+			})
+			.orElseGet(() -> new QuizHistory(user, signTopic, correctCount));
 	}
 }
