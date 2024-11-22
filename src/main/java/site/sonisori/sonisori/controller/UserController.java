@@ -59,10 +59,11 @@ public class UserController {
 	}
 
 	@DeleteMapping("/auth/logout")
-	public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails,
 		HttpServletRequest request, HttpServletResponse response) {
+		Long userId = userDetails.getUserId();
 		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
-		jwtUtil.deleteRefreshToken(refreshToken);
+		jwtUtil.deleteRefreshToken(refreshToken, userId);
 
 		deleteCookies(response, "access_token");
 		deleteCookies(response, "refresh_token");
@@ -87,6 +88,26 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@DeleteMapping("/users/me")
+	public ResponseEntity<Void> deleteUser(
+		@AuthenticationPrincipal CustomUserDetails userDetails,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) {
+		Long userId = userDetails.getUserId();
+		userService.deleteUser(userId);
+
+		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
+		jwtUtil.deleteRefreshToken(refreshToken, userId);
+
+		deleteCookies(response, "access_token");
+		deleteCookies(response, "refresh_token");
+
+		SecurityContextHolder.clearContext();
+
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/auth")
 	public ResponseEntity<AuthResponse> getUserAuthStatus(
 		@AuthenticationPrincipal CustomUserDetails userDetails
@@ -96,19 +117,16 @@ public class UserController {
 		return ResponseEntity.ok(authResponse);
 	}
 
-	@DeleteMapping("/users/me")
-	public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		HttpServletRequest request, HttpServletResponse response) {
-		Long userId = customUserDetails.getUserId();
-		userService.deleteUser(userId);
-
+	@GetMapping("/reissue")
+	public ResponseEntity<Void> reissue(@AuthenticationPrincipal CustomUserDetails userDetails,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) {
+		Long userId = userDetails.getUserId();
 		String refreshToken = cookieUtil.getCookieValue(request, "refresh_token");
-		jwtUtil.deleteRefreshToken(refreshToken);
 
-		deleteCookies(response, "access_token");
-		deleteCookies(response, "refresh_token");
-
-		SecurityContextHolder.clearContext();
+		String newAccessToken = jwtUtil.reissueAccessToken(refreshToken, userId);
+		addCookies(response, "access_token", newAccessToken);
 
 		return ResponseEntity.noContent().build();
 	}
