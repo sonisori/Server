@@ -1,6 +1,7 @@
 package site.sonisori.sonisori.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
@@ -21,7 +22,8 @@ public class QuizHistoryService {
 	private final SignTopicRepository signTopicRepository;
 	private final UserRepository userRepository;
 
-	public QuizHistoryResponse submitQuizResult(
+	@Transactional
+	public QuizHistoryResponse saveAndGetQuizResult(
 		Long userId, Long topicId, QuizHistoryRequest quizHistoryRequest
 	) {
 		User user = userRepository.findById(userId)
@@ -29,6 +31,9 @@ public class QuizHistoryService {
 		SignTopic signTopic = signTopicRepository.findById(topicId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_TOPIC.getMessage()));
 
+		if (quizHistoryRequest.correctCount() > signTopic.getTotalQuizzes()) {
+			throw new IllegalArgumentException(ErrorMessage.EXCEEDS_TOTAL_COUNT.getMessage());
+		}
 		QuizHistory quizHistory = QuizHistory.builder()
 			.user(user)
 			.signTopic(signTopic)

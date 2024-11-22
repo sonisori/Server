@@ -23,13 +23,13 @@ public class QuizHistoryController {
 	private final QuizHistoryService quizHistoryService;
 
 	@PostMapping("/topics/{topicId}/result")
-	public ResponseEntity<QuizHistoryResponse> submitQuizResult(
+	public ResponseEntity<QuizHistoryResponse> saveAndGetQuizResult(
 		@PathVariable("topicId") Long topicId,
 		@AuthenticationPrincipal CustomUserDetails userDetails,
 		@RequestBody @Valid QuizHistoryRequest quizHistoryRequest
 	) {
 		Long userId = userDetails.getUserId();
-		QuizHistoryResponse response = quizHistoryService.submitQuizResult(
+		QuizHistoryResponse response = quizHistoryService.saveAndGetQuizResult(
 			userId, topicId, quizHistoryRequest
 		);
 		return ResponseEntity.ok(response);
