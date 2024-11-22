@@ -73,6 +73,13 @@ public class GlobalExceptionHandler {
 			.body(new ErrorResponse(ErrorMessage.NULL_POINTER_EXCEPTION.getMessage()));
 	}
 
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+		logException(ex);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(new ErrorResponse(ex.getMessage()));
+	}
+
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
 		logException(ex);
