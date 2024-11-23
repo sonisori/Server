@@ -6,14 +6,14 @@ import jakarta.validation.constraints.Size;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.enums.Difficulty;
 
-public record AddSignTopicRequest(
+public record SignTopicRequest(
 	@NotBlank(message = ErrorMessage.INVALID_VALUE)
 	@Size(max = 45, message = ErrorMessage.INVALID_VALUE)
-	String topicName,
+	String title,
 
 	@NotBlank(message = ErrorMessage.INVALID_VALUE)
 	@Size(max = 255, message = ErrorMessage.INVALID_VALUE)
-	String topicContents,
+	String contents,
 
 	@NotNull(message = ErrorMessage.INVALID_VALUE)
 	Difficulty difficulty

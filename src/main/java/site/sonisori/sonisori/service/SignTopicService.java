@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import site.sonisori.sonisori.dto.signtopic.AddSignTopicRequest;
+import site.sonisori.sonisori.common.response.SuccessResponse;
+import site.sonisori.sonisori.dto.signtopic.SignTopicRequest;
 import site.sonisori.sonisori.dto.signtopic.SignTopicResponse;
 import site.sonisori.sonisori.entity.QuizHistory;
 import site.sonisori.sonisori.entity.SignTopic;
@@ -52,13 +53,15 @@ public class SignTopicService {
 			.build();
 	}
 
-	public Long addSignTopic(AddSignTopicRequest signTopicRequest) {
+	public SuccessResponse addSignTopic(SignTopicRequest signTopicRequest) {
 		SignTopic signTopic = SignTopic.builder()
-			.title(signTopicRequest.topicName())
-			.contents(signTopicRequest.topicContents())
+			.title(signTopicRequest.title())
+			.contents(signTopicRequest.contents())
 			.difficulty(signTopicRequest.difficulty())
 			.build();
 
-		return signTopicRepository.save(signTopic).getId();
+		Long id = signTopicRepository.save(signTopic).getId();
+
+		return new SuccessResponse(id);
 	}
 }

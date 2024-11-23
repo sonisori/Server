@@ -44,8 +44,8 @@ public class SecurityConfig {
 			.addFilterBefore(jwtExceptionFilter, JwtFilter.class)
 			.oauth2Login((oauth2) ->
 				oauth2.userInfoEndpoint(
-					(userInfoEndpointConfig) ->
-						userInfoEndpointConfig.userService(customOAuth2Service))
+						(userInfoEndpointConfig) ->
+							userInfoEndpointConfig.userService(customOAuth2Service))
 					.successHandler(customOAuth2SuccessHandler)
 			)
 			.authorizeHttpRequests((auth) ->
@@ -53,6 +53,7 @@ public class SecurityConfig {
 					.requestMatchers(
 						"/login/oauth2/code/*", "/api/auth/signup", "/api/auth/login", "/api/auth"
 					).permitAll()
+					.requestMatchers("/api/admin/**").hasRole("ADMIN")
 					.anyRequest().authenticated()
 			)
 			.exceptionHandling(exceptionHandlerConfig)
