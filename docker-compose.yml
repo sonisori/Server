@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0.37
@@ -43,6 +41,25 @@ services:
       - redis_data:/data
     networks:
       - sonisori-network
+
+  sonisori-be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sonisori-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - sonisori-network
+    environment:
+      - SPRING_DATASOURCE_URL = ${DB_URL}
+      - SPRING_DATASOURCE_USERNAME = ${MYSQL_DATABASE}
+      - SPRING_DATASOURCE_PASSWORD = ${MYSQL_PASSWORD}
+#    volumes:
+#      - ./:/app
+#      - ~/.gradle:/root/.gradle
 
 networks:
   sonisori-network:
