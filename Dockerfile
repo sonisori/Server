@@ -9,5 +9,6 @@ RUN ./gradlew clean build -x test
 FROM eclipse-temurin:21-jdk AS prod
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
+COPY src/main/resources/application.properties ./src/main/resources/application.properties
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
