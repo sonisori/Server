@@ -6,7 +6,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test
 
 # run
-FROM openjdk:21-jdk-slim AS prod
+FROM eclipse-temurin:21-jdk AS prod
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
