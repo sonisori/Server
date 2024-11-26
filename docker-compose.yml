@@ -43,10 +43,7 @@ services:
       - sonisori-network
 
   sonisori-be:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: sonisori-backend
+    image: hanbirang/sonisori-be
     ports:
       - "8080:8080"
     depends_on:
@@ -54,10 +51,6 @@ services:
       - redis
     networks:
       - sonisori-network
-    environment:
-      - SPRING_DATASOURCE_URL=${DB_URL}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_DATABASE}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
 
 networks:
   sonisori-network:

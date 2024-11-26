@@ -20,9 +20,7 @@ jobs:
 
       - name: Setup application.properties
         run: |
-          touch ./src/main/resources/application.properties
           echo "${{ secrets.CI_APPLICATION }}" > ./src/main/resources/application.properties
-          cat ./src/main/resources/application.properties
 
       # gradlew 권한 추가
       - name: Run chmod to make gradlew executable
@@ -44,7 +42,7 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-              ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-
 
 
       # Gradle test and build
@@ -55,7 +53,7 @@ jobs:
         run: ./gradlew test
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       # checkstyle 검사
       - name: Run java checkstyle
@@ -86,9 +84,10 @@ jobs:
 
       # Docker 이미지 빌드 및 push
       - name: Build and Push Docker image
-#        if: github.event_name == 'push'
+        #  if: github.event_name == 'push'
         run: |
-          touch ./src/main/resources/application.properties
-          echo "${{ secrets.DOCKER_APPLICATION }}" > ./src/main/resources/application.properties
-          docker build . -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
+          TAG=${{ steps.metadata.outputs.tags }}
+          echo "${{ secrets.DOCKER_APPLICATION }}" > ./src/main/resources/docker-application.properties
+          docker build . -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:${TAG} -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/sonisori-be:${TAG}
           docker push ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
