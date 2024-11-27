@@ -42,16 +42,6 @@ services:
     networks:
       - sonisori-network
 
-  sonisori-be:
-    image: hanbirang/sonisori-be
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-      - redis
-    networks:
-      - sonisori-network
-
 networks:
   sonisori-network:
 
