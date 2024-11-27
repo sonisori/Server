@@ -1,7 +1,6 @@
 package site.sonisori.sonisori.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -138,7 +137,7 @@ public class JwtUtil {
 
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = customOAuth2Service.loadUserByUsername(getUsername(token));
-		return new UsernamePasswordAuthenticationToken(userDetails, "", Collections.emptyList());
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
 	public String reissueAccessToken(String refreshToken, Long userId) {

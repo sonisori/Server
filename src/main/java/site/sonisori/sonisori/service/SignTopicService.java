@@ -6,8 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.common.response.SuccessResponse;
+import site.sonisori.sonisori.dto.signtopic.SignTopicRequest;
 import site.sonisori.sonisori.dto.signtopic.SignTopicResponse;
 import site.sonisori.sonisori.entity.QuizHistory;
 import site.sonisori.sonisori.entity.SignTopic;
@@ -49,5 +52,18 @@ public class SignTopicService {
 			.totalQuizzes(signTopic.getTotalQuizzes())
 			.correctCount(correctCount)
 			.build();
+	}
+
+	@Transactional
+	public SuccessResponse addSignTopic(SignTopicRequest signTopicRequest) {
+		SignTopic signTopic = SignTopic.builder()
+			.title(signTopicRequest.title())
+			.contents(signTopicRequest.contents())
+			.difficulty(signTopicRequest.difficulty())
+			.build();
+
+		Long id = signTopicRepository.save(signTopic).getId();
+
+		return new SuccessResponse(id);
 	}
 }
