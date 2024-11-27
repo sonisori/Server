@@ -49,6 +49,17 @@ public class ExceptionHandlerConfig implements Customizer<ExceptionHandlingConfi
 
 	private void handleAccessDeniedException(HttpServletRequest request, HttpServletResponse response,
 		AccessDeniedException accessDeniedException) throws IOException {
-		response.sendError(HttpServletResponse.SC_FORBIDDEN);
+		log.error("Access denied request - Method: {}, URI: {}, Error: {}",
+			request.getMethod(),
+			request.getRequestURI(),
+			accessDeniedException.getMessage());
+
+		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		response.setContentType("application/json");
+
+		ErrorResponse errorResponse = new ErrorResponse(ErrorMessage.ACCESS_DENIED.getMessage()); // 메시지 수정 가능
+
+		String jsonResponse = objectMapper.writeValueAsString(errorResponse);
+		response.getWriter().write(jsonResponse);
 	}
 }
