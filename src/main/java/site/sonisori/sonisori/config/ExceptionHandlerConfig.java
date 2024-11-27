@@ -57,7 +57,7 @@ public class ExceptionHandlerConfig implements Customizer<ExceptionHandlingConfi
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		response.setContentType("application/json");
 
-		ErrorResponse errorResponse = new ErrorResponse(ErrorMessage.ACCESS_DENIED.getMessage()); // 메시지 수정 가능
+		ErrorResponse errorResponse = new ErrorResponse(ErrorMessage.ACCESS_DENIED.getMessage());
 
 		String jsonResponse = objectMapper.writeValueAsString(errorResponse);
 		response.getWriter().write(jsonResponse);
