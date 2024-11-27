@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.common.response.SuccessResponse;
@@ -53,6 +54,7 @@ public class SignTopicService {
 			.build();
 	}
 
+	@Transactional
 	public SuccessResponse addSignTopic(SignTopicRequest signTopicRequest) {
 		SignTopic signTopic = SignTopic.builder()
 			.title(signTopicRequest.title())
