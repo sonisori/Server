@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.response.SuccessResponse;
 import site.sonisori.sonisori.dto.signtopic.SignTopicRequest;
 import site.sonisori.sonisori.dto.signtopic.SignTopicResponse;
 import site.sonisori.sonisori.entity.QuizHistory;
 import site.sonisori.sonisori.entity.SignTopic;
+import site.sonisori.sonisori.exception.NotFoundException;
 import site.sonisori.sonisori.repository.QuizHistoryRepository;
 import site.sonisori.sonisori.repository.SignTopicRepository;
 
@@ -65,5 +67,13 @@ public class SignTopicService {
 		Long id = signTopicRepository.save(signTopic).getId();
 
 		return new SuccessResponse(id);
+	}
+
+	public void deleteSignTopic(Long topicId) {
+		if (!signTopicRepository.existsById(topicId)) {
+			throw new NotFoundException(ErrorMessage.NOT_FOUND_TOPIC.getMessage());
+		}
+
+		signTopicRepository.deleteById(topicId);
 	}
 }
