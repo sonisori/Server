@@ -39,19 +39,19 @@ public class SignTopicController {
 	}
 
 	@PostMapping("/admin/topics")
-	public ResponseEntity<SuccessResponse> addSignTopic(@Valid @RequestBody SignTopicRequest signTopicRequest) {
+	public ResponseEntity<SuccessResponse> addSignTopicByAdmin(@Valid @RequestBody SignTopicRequest signTopicRequest) {
 		SuccessResponse successResponse = signTopicService.addSignTopic(signTopicRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
 	}
 
 	@DeleteMapping("/admin/topics/{topicId}")
-	public ResponseEntity<Void> deleteSignTopic(@PathVariable(name = "topicId") Long topicId) {
+	public ResponseEntity<Void> deleteSignTopicByAdmin(@PathVariable(name = "topicId") Long topicId) {
 		signTopicService.deleteSignTopic(topicId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 	@PatchMapping("/admin/topics/{topicId}")
-	public ResponseEntity<Void> updateSignTopic(@PathVariable(name = "topicId") Long topicId,
+	public ResponseEntity<Void> updateSignTopicByAdmin(@PathVariable(name = "topicId") Long topicId,
 		@Valid @RequestBody SignTopicRequest signTopicRequest
 	) {
 		signTopicService.updateSignTopic(topicId, signTopicRequest);
