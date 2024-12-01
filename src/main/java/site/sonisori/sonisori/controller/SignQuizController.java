@@ -34,7 +34,7 @@ public class SignQuizController {
 	}
 
 	@PostMapping("/admin/topics/{topicId}/quizzes")
-	public ResponseEntity<SuccessResponse> addQuizzes(@PathVariable(name = "topicId") Long topicId,
+	public ResponseEntity<SuccessResponse> addQuizToTopic(@PathVariable(name = "topicId") Long topicId,
 		@Valid @RequestBody SignQuizRequest signQuizRequest
 	) {
 		SuccessResponse successResponse = signQuizService.addQuiz(topicId, signQuizRequest);

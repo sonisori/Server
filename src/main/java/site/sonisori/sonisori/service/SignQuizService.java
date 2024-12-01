@@ -50,8 +50,7 @@ public class SignQuizService {
 
 		Long id = signQuizRepository.save(signQuiz).getId();
 
-		signTopic.addTotalQuizzes();
-		signTopicRepository.save(signTopic);
+		signTopic.incrementTotalQuizzes();
 
 		return new SuccessResponse(id);
 	}

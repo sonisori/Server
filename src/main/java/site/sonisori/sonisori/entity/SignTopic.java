@@ -58,7 +58,13 @@ public class SignTopic extends DateEntity {
 	@OneToMany(mappedBy = "signTopic", orphanRemoval = true)
 	private List<SignQuiz> signQuizzes;
 
-	public void addTotalQuizzes() {
+	public void incrementTotalQuizzes() {
 		this.totalQuizzes++;
+	}
+
+	public void updateTopic(String newTitle, String newContents, Difficulty newDifficulty) {
+		this.title = newTitle;
+		this.contents = newContents;
+		this.difficulty = newDifficulty;
 	}
 }

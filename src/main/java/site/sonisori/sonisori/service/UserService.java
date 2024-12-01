@@ -95,7 +95,6 @@ public class UserService {
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
 
 		user.updateName(updateUserNameRequest.name());
-		userRepository.save(user);
 	}
 
 	public UserProfileResponse createUserProfileResponse(Long userId) {
