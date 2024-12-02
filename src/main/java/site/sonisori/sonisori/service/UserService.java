@@ -90,6 +90,7 @@ public class UserService {
 			.build();
 	}
 
+	@Transactional
 	public void updateUserName(Long userId, UpdateUserNameRequest updateUserNameRequest) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER.getMessage()));
