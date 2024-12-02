@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,10 +35,17 @@ public class SignQuizController {
 	}
 
 	@PostMapping("/admin/topics/{topicId}/quizzes")
-	public ResponseEntity<SuccessResponse> addQuizToTopic(@PathVariable(name = "topicId") Long topicId,
+	public ResponseEntity<SuccessResponse> addQuizToTopicByAdmin(@PathVariable(name = "topicId") Long topicId,
 		@Valid @RequestBody SignQuizRequest signQuizRequest
 	) {
 		SuccessResponse successResponse = signQuizService.addQuiz(topicId, signQuizRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
+	}
+
+	@DeleteMapping("/admin/quizzes/{quizId}")
+	public ResponseEntity<Void> deleteQuizByAdmin(@PathVariable(name = "quizId") Long quizId
+	) {
+		signQuizService.deleteQuiz(quizId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

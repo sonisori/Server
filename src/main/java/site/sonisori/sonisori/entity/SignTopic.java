@@ -62,6 +62,10 @@ public class SignTopic extends DateEntity {
 		this.totalQuizzes++;
 	}
 
+	public void decrementTotalQuizzes() {
+		this.totalQuizzes--;
+	}
+
 	public void updateTopic(String newTitle, String newContents, Difficulty newDifficulty) {
 		this.title = newTitle;
 		this.contents = newContents;

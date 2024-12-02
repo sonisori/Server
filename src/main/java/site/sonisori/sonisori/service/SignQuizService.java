@@ -54,4 +54,15 @@ public class SignQuizService {
 
 		return new SuccessResponse(id);
 	}
+
+	@Transactional
+	public void deleteQuiz(Long quizId) {
+		SignQuiz signQuiz = signQuizRepository.findById(quizId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_QUIZ.getMessage()));
+
+		SignTopic signTopic = signQuiz.getSignTopic();
+		signTopic.decrementTotalQuizzes();
+
+		signQuizRepository.deleteById(quizId);
+	}
 }
