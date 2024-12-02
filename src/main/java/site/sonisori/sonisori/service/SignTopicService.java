@@ -77,12 +77,11 @@ public class SignTopicService {
 		signTopicRepository.deleteById(topicId);
 	}
 
+	@Transactional
 	public void updateSignTopic(Long topicId, SignTopicRequest signTopicRequest) {
 		SignTopic signTopic = signTopicRepository.findById(topicId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_TOPIC.getMessage()));
 
 		signTopic.updateTopic(signTopicRequest.title(), signTopicRequest.contents(), signTopicRequest.difficulty());
-
-		signTopicRepository.save(signTopic);
 	}
 }
