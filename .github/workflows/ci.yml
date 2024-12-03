@@ -76,6 +76,8 @@ jobs:
       - name: Build and Push Docker image
         if: github.event_name == 'push'
         run: |
-          echo "${{ secrets.DOCKER_APPLICATION }}" > ./src/main/resources/application.properties
-          docker build . -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
+          echo "${{ secrets.CD_APPLICATION }}" > ./src/main/resources/application.properties
+          docker build . -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/sonisori-be:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/sonisori-be:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
