@@ -41,4 +41,7 @@ public class SignQuiz extends DateEntity {
 	@Size(max = 255)
 	private String sentence;
 
+	public void updateSentence(String sentence) {
+		this.sentence = sentence;
+	}
 }

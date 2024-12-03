@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,14 @@ public class SignQuizController {
 	public ResponseEntity<Void> deleteQuizByAdmin(@PathVariable(name = "quizId") Long quizId
 	) {
 		signQuizService.deleteQuiz(quizId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@PatchMapping("/admin/quizzes/{quizId}")
+	public ResponseEntity<Void> updateQuizByAdmin(@PathVariable(name = "quizId") Long quizId,
+		@Valid @RequestBody SignQuizRequest signQuizRequest
+	) {
+		signQuizService.updateQuiz(quizId, signQuizRequest);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

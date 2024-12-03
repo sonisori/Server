@@ -64,4 +64,12 @@ public class SignQuizService {
 
 		signQuizRepository.deleteById(quizId);
 	}
+
+	@Transactional
+	public void updateQuiz(Long quizId, SignQuizRequest signQuizRequest) {
+		SignQuiz signQuiz = signQuizRepository.findById(quizId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_QUIZ.getMessage()));
+
+		signQuiz.updateSentence(signQuizRequest.sentence());
+	}
 }
