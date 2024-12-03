@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.sonisori.sonisori.common.DateEntity;
+import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.enums.Difficulty;
 
 @Entity
@@ -63,7 +64,11 @@ public class SignTopic extends DateEntity {
 	}
 
 	public void decrementTotalQuizzes() {
-		this.totalQuizzes--;
+		if (this.totalQuizzes > 0) {
+			this.totalQuizzes--;
+		} else {
+			throw new IllegalArgumentException(ErrorMessage.UNDER_QUIZ_COUNT.getMessage());
+		}
 	}
 
 	public void updateTopic(String newTitle, String newContents, Difficulty newDifficulty) {

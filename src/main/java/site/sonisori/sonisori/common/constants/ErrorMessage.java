@@ -19,7 +19,8 @@ public enum ErrorMessage {
 	NOT_FOUND_USER("존재하지 않는 회원입니다."),
 	NOT_FOUND_TOPIC("존재하지 않는 토픽입니다."),
 	NOT_FOUND_QUIZ("존재하지 않는 퀴즈입니다."),
-	EXCEEDS_TOTAL_COUNT("정답 개수가 전체 문제 수를 초과할 수 없습니다.");
+	EXCEEDS_TOTAL_COUNT("정답 개수가 전체 문제 수를 초과할 수 없습니다."),
+	UNDER_QUIZ_COUNT("퀴즈 개수는 최소 0개 이상이어야 합니다.");
 
 	public static final String INVALID_VALUE = "형식에 올바르게 작성해주세요.";
 

@@ -60,8 +60,7 @@ public class SignQuizService {
 		SignQuiz signQuiz = signQuizRepository.findById(quizId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_QUIZ.getMessage()));
 
-		SignTopic signTopic = signQuiz.getSignTopic();
-		signTopic.decrementTotalQuizzes();
+		signQuiz.getSignTopic().decrementTotalQuizzes();
 
 		signQuizRepository.deleteById(quizId);
 	}
