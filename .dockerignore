@@ -2,3 +2,14 @@ build/
 .gradle
 *.log
 *.properties
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+.env
+*.tmp
+*.bak
+src/test/
