@@ -1,4 +1,4 @@
-name: Java CD to AWS Elastic Beanstalk
+name: Java CD to EC2
 
 on:
   workflow_dispatch:
@@ -17,22 +17,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Docker 이미지 빌드 및 push
-      - name: Build and Push Docker image
-        run: |
-          echo "${{ secrets.CD_APPLICATION }}" > ./src/main/resources/application.properties
-          docker build . -t ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
-
-      - name: Beanstalk Deploy
-        uses: einaregilsson/beanstalk-deploy@v20
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ secrets.APPLICATION_NAME }}
-          environment_name: ${{ secrets.ENVIRONMENT_NAME }}
-          version_label: "github-action-${{ github.sha }}-${{ github.run_number }}"
-          region: ${{ secrets.AWS_REGION }}
-          deployment_package: Dockerrun.aws.json
-          wait_for_deployment: true
-          wait_for_environment_recovery: 180
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@matser
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
+            docker stop sonisori-container || true
+            docker rm sonisori-container || true 
+            docker run -d --name sonisori-container -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/sonisori-be:latest
