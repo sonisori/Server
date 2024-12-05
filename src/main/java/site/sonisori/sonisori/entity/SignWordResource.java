@@ -38,7 +38,7 @@ public class SignWordResource extends DateEntity {
 	@JoinColumn(name = "sign_word_id")
 	private SignWord signWord;
 
-	@Column(name = "resouce_type")
+	@Column(name = "resource_type")
 	@Enumerated(EnumType.STRING)
 	@NotNull
 	private ResourceType resourceType;
