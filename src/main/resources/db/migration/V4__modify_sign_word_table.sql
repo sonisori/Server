@@ -6,7 +6,7 @@ ALTER TABLE `sonisori`.`sign_words`
 CREATE TABLE `sonisori`.`sign_word_resources` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `sign_word_id` BIGINT NOT NULL,
-  `type` ENUM('image', 'video') NOT NULL,
+  `resource_type` ENUM('image', 'video') NOT NULL,
   `resource_url` VARCHAR(500) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
