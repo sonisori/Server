@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.sonisori.sonisori.common.DateEntity;
+import site.sonisori.sonisori.dto.signword.SignWordResponse;
 
 @Entity
 @Table(name = "sign_words")
@@ -34,4 +35,8 @@ public class SignWord extends DateEntity {
 	@Column(name = "description")
 	@Size(max = 500)
 	private String description;
+
+	public SignWordResponse toDTO() {
+		return new SignWordResponse(this.id, this.word);
+	}
 }

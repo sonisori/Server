@@ -15,17 +15,10 @@ import site.sonisori.sonisori.repository.SignWordRepository;
 public class SignWordService {
 	private final SignWordRepository signWordRepository;
 
-	public List<SignWordResponse> fetchSignWords() {
+	public List<SignWordResponse> getAllSignWords() {
 		List<SignWord> signWords = signWordRepository.findAll();
 		return signWords.stream()
-			.map(this::buildSignWordResponse)
+			.map(SignWord::toDTO)
 			.collect(Collectors.toList());
-	}
-
-	private SignWordResponse buildSignWordResponse(SignWord signWord) {
-		return SignWordResponse.builder()
-			.id(signWord.getId())
-			.word(signWord.getWord())
-			.build();
 	}
 }

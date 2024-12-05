@@ -19,7 +19,7 @@ public class SignWordController {
 
 	@GetMapping("/words")
 	public ResponseEntity<List<SignWordResponse>> getAllSignWords() {
-		List<SignWordResponse> signWords = signWordService.fetchSignWords();
+		List<SignWordResponse> signWords = signWordService.getAllSignWords();
 		return ResponseEntity.ok(signWords);
 	}
 }
