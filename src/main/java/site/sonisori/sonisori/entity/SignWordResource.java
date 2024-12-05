@@ -44,7 +44,7 @@ public class SignWordResource extends DateEntity {
 	private ResourceType resourceType;
 
 	@NotBlank
-	@Column("resource_url")
+	@Column(name = "resource_url")
 	@Size(max = 500)
 	private String resourceUrl;
 }
