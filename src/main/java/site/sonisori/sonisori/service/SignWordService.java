@@ -18,7 +18,7 @@ public class SignWordService {
 	public List<SignWordResponse> getAllSignWords() {
 		List<SignWord> signWords = signWordRepository.findAll();
 		return signWords.stream()
-			.map(SignWord::toDTO)
+			.map(SignWord::toDto)
 			.collect(Collectors.toList());
 	}
 }
