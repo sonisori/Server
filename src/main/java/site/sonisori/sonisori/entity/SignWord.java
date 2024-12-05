@@ -36,7 +36,7 @@ public class SignWord extends DateEntity {
 	@Size(max = 500)
 	private String description;
 
-	public SignWordResponse toDTO() {
+	public SignWordResponse toDto() {
 		return new SignWordResponse(this.id, this.word);
 	}
 }
