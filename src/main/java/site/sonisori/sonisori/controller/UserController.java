@@ -37,6 +37,7 @@ public class UserController {
 	private final UserService userService;
 	private final CookieUtil cookieUtil;
 	private final JwtUtil jwtUtil;
+	private static final String[] DOMAINS = {"localhost", ".sonisori.site"};
 
 	@PostMapping("/auth/signup")
 	public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
@@ -132,12 +133,16 @@ public class UserController {
 	}
 
 	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
-		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+		for (String domain : DOMAINS) {
+			String cookie = cookieUtil.createCookie(tokenName, tokenValue, domain).toString();
+			response.addHeader("Set-Cookie", cookie);
+		}
 	}
 
-	private void deleteCookies(HttpServletResponse response, String cookieName) {
-		String cookie = cookieUtil.clearCookie(cookieName, "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+	private void deleteCookies(HttpServletResponse response, String tokenName) {
+		for (String domain : DOMAINS) {
+			String cookie = cookieUtil.clearCookie(tokenName, domain).toString();
+			response.addHeader("Set-Cookie", cookie);
+		}
 	}
 }
