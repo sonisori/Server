@@ -5,9 +5,9 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record SignWordResourcesRequest(
+public record SignWordResourceListRequest(
 	@NotNull
 	@Size(min = 1)
-	List<ResourceRequest> resources
+	List<SignWordResourceRequest> resources
 ) {
 }
