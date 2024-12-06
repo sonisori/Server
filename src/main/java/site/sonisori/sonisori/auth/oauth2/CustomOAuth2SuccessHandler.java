@@ -20,12 +20,13 @@ import site.sonisori.sonisori.entity.User;
 @RequiredArgsConstructor
 @Component
 public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
 	private final CookieUtil cookieUtil;
 	private final JwtUtil jwtUtil;
 
 	@Value("${redirect.url}")
 	private String redirectUrl;
+
+	private static final String[] DOMAINS = {"localhost", ".sonisori.site"};
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -42,7 +43,9 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 	}
 
 	private void addCookies(HttpServletResponse response, String tokenName, String tokenValue) {
-		String cookie = cookieUtil.createCookie(tokenName, tokenValue, "localhost").toString();
-		response.addHeader("Set-Cookie", cookie);
+		for (String domain : DOMAINS) {
+			String cookie = cookieUtil.createCookie(tokenName, tokenValue, domain).toString();
+			response.addHeader("Set-Cookie", cookie);
+		}
 	}
 }
