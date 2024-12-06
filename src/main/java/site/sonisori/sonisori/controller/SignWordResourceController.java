@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import site.sonisori.sonisori.common.response.SuccessResponse;
-import site.sonisori.sonisori.dto.signwordresource.SignWordResourceRequest;
+import site.sonisori.sonisori.dto.signwordresource.SignWordResourcesRequest;
 import site.sonisori.sonisori.service.SignWordResourceService;
 
 @RestController
@@ -21,13 +20,13 @@ public class SignWordResourceController {
 	private final SignWordResourceService signWordResourceService;
 
 	@PostMapping("/admin/words/{wordId}/resources")
-	public ResponseEntity<SuccessResponse> addSignWordResourceByAdmin(
+	public ResponseEntity<Void> addSignWordResourceByAdmin(
 		@PathVariable(name = "wordId") Long wordId,
-		@RequestBody @Valid SignWordResourceRequest resourceRequest
+		@RequestBody @Valid SignWordResourcesRequest resourcesRequest
 	) {
-		SuccessResponse successResponse = signWordResourceService.addSignWordResource(
-			wordId, resourceRequest
+		signWordResourceService.addSignWordResource(
+			wordId, resourcesRequest
 		);
-		return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 }
