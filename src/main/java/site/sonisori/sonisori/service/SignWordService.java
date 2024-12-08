@@ -45,4 +45,12 @@ public class SignWordService {
 
 		signWordRepository.deleteById(wordId);
 	}
+
+	@Transactional
+	public void updateSignWord(Long wordId, SignWordRequest signWordRequest) {
+		SignWord signWord = signWordRepository.findById(wordId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_WORD.getMessage()));
+
+		signWord.updateWord(signWordRequest.word(), signWordRequest.description());
+	}
 }
