@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.common.constants.ErrorMessage;
 import site.sonisori.sonisori.common.response.SuccessResponse;
+import site.sonisori.sonisori.dto.signword.SignWordDetailResponse;
 import site.sonisori.sonisori.dto.signword.SignWordRequest;
 import site.sonisori.sonisori.dto.signword.SignWordResponse;
+import site.sonisori.sonisori.dto.signwordresource.SignWordResourceDto;
 import site.sonisori.sonisori.entity.SignWord;
 import site.sonisori.sonisori.exception.NotFoundException;
 import site.sonisori.sonisori.repository.SignWordRepository;
@@ -25,6 +27,22 @@ public class SignWordService {
 		return signWords.stream()
 			.map(SignWord::toDto)
 			.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public SignWordDetailResponse getSignWordDetail(Long wordId) {
+		SignWord signWord = signWordRepository.findById(wordId)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_WORD.getMessage()));
+
+		List<SignWordResourceDto> resources = signWord.getSignWordResources().stream()
+			.map(resource -> new SignWordResourceDto(resource.getResourceType(), resource.getResourceUrl()))
+			.toList();
+
+		return new SignWordDetailResponse(
+			signWord.getWord(),
+			signWord.getDescription(),
+			resources
+		);
 	}
 
 	@Transactional
