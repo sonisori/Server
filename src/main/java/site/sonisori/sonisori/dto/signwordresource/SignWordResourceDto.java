@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import site.sonisori.sonisori.common.enums.ResourceType;
 
-public record SignWordResourceRequest(
+public record SignWordResourceDto(
 	@NotNull
 	ResourceType resourceType,
 
