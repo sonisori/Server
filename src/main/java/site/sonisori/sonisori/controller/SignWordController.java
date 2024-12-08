@@ -33,7 +33,7 @@ public class SignWordController {
 	}
 
 	@GetMapping("/words/{wordId}")
-	public ResponseEntity<SignWordDetailResponse> getSignWordDetail(
+	public ResponseEntity<SignWordDetailResponse> getSignWordDetails(
 		@PathVariable(name = "wordId") Long wordId
 	) {
 		SignWordDetailResponse signWordDetail = signWordService.getSignWordDetail(wordId);

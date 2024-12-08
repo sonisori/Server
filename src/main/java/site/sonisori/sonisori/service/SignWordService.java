@@ -14,6 +14,7 @@ import site.sonisori.sonisori.dto.signword.SignWordRequest;
 import site.sonisori.sonisori.dto.signword.SignWordResponse;
 import site.sonisori.sonisori.dto.signwordresource.SignWordResourceDto;
 import site.sonisori.sonisori.entity.SignWord;
+import site.sonisori.sonisori.entity.SignWordResource;
 import site.sonisori.sonisori.exception.NotFoundException;
 import site.sonisori.sonisori.repository.SignWordRepository;
 
@@ -34,15 +35,19 @@ public class SignWordService {
 		SignWord signWord = signWordRepository.findById(wordId)
 			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_WORD.getMessage()));
 
-		List<SignWordResourceDto> resources = signWord.getSignWordResources().stream()
-			.map(resource -> new SignWordResourceDto(resource.getResourceType(), resource.getResourceUrl()))
-			.toList();
+		List<SignWordResourceDto> resources = mapSignWordResources(signWord.getSignWordResources());
 
 		return new SignWordDetailResponse(
 			signWord.getWord(),
 			signWord.getDescription(),
 			resources
 		);
+	}
+
+	private List<SignWordResourceDto> mapSignWordResources(List<SignWordResource> resources) {
+		return resources.stream()
+			.map(resource -> new SignWordResourceDto(resource.getResourceType(), resource.getResourceUrl()))
+			.toList();
 	}
 
 	@Transactional
