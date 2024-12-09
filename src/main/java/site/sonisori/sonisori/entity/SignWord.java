@@ -46,4 +46,9 @@ public class SignWord extends DateEntity {
 	public SignWordResponse toDto() {
 		return new SignWordResponse(this.id, this.word);
 	}
+
+	public void updateWord(String word, String description) {
+		this.word = word;
+		this.description = description;
+	}
 }
