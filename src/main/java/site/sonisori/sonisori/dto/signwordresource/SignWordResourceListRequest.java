@@ -8,6 +8,6 @@ import jakarta.validation.constraints.Size;
 public record SignWordResourceListRequest(
 	@NotNull
 	@Size(min = 1)
-	List<SignWordResourceRequest> resources
+	List<SignWordResourceDto> resources
 ) {
 }

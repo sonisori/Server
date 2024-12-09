@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import site.sonisori.sonisori.common.response.SuccessResponse;
+import site.sonisori.sonisori.dto.signword.SignWordDetailResponse;
 import site.sonisori.sonisori.dto.signword.SignWordRequest;
 import site.sonisori.sonisori.dto.signword.SignWordResponse;
 import site.sonisori.sonisori.service.SignWordService;
@@ -29,6 +30,14 @@ public class SignWordController {
 	public ResponseEntity<List<SignWordResponse>> getAllSignWords() {
 		List<SignWordResponse> signWords = signWordService.getAllSignWords();
 		return ResponseEntity.ok(signWords);
+	}
+
+	@GetMapping("/words/{wordId}")
+	public ResponseEntity<SignWordDetailResponse> getSignWordDetails(
+		@PathVariable(name = "wordId") Long wordId
+	) {
+		SignWordDetailResponse signWordDetail = signWordService.getSignWordDetail(wordId);
+		return ResponseEntity.ok(signWordDetail);
 	}
 
 	@PostMapping("/admin/words")
